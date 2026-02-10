@@ -21,7 +21,6 @@ import { useProjectStore } from "@/lib/stores/project-store";
 import {
   PROJECT_COLORS,
   PROJECT_STATUSES,
-  type ProjectStatus,
 } from "@/lib/constants";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";

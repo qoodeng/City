@@ -3,7 +3,6 @@ import { Attachment } from "@/lib/db/schema";
 import { Paperclip, X, Download, FileIcon, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { cn } from "@/lib/utils";
 
 interface AttachmentListProps {
     issueId: string;
@@ -55,7 +54,7 @@ export function AttachmentList({ issueId, attachments = [], onUpload }: Attachme
             if (!res.ok) throw new Error("Delete failed");
             toast.success("Attachment removed");
             if (onUpload) onUpload();
-        } catch (error) {
+        } catch {
             toast.error("Failed to delete attachment");
         }
     };

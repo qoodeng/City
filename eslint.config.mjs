@@ -12,7 +12,34 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Compiled Electron output
+    "dist-electron/**",
+    // Scripts (CommonJS)
+    "scripts/**",
   ]),
+  // Electron source: allow require() and any (Electron IPC API requires it)
+  {
+    files: ["src/electron/**/*.ts"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
+  // Test files: allow any for mocks/helpers
+  {
+    files: ["src/test/**/*.ts", "src/test/**/*.tsx"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  },
+  // E2E fixtures: Playwright's use() is not a React hook
+  {
+    files: ["e2e/**/*.ts"],
+    rules: {
+      "react-hooks/rules-of-hooks": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+    },
+  },
 ]);
 
 export default eslintConfig;

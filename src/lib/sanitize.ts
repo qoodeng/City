@@ -18,17 +18,6 @@ export function sanitizeHtml(dirty: string): string {
   });
 }
 
-/** Hex color regex: #RGB or #RRGGBB */
-const HEX_COLOR_RE = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/;
-
-/** Validate a string is a valid hex color. Returns the color or a fallback. */
-export function sanitizeColor(color: unknown, fallback: string): string {
-  if (typeof color === "string" && HEX_COLOR_RE.test(color)) {
-    return color;
-  }
-  return fallback;
-}
-
 /**
  * Escape FTS5 special characters from user input to prevent query injection.
  * Wraps each word in double quotes to treat it as a literal phrase token.

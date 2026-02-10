@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -15,8 +15,7 @@ import {
   CommandGroup,
 } from "@/components/ui/command";
 import { Button } from "@/components/ui/button";
-import { Check, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 import { useIssueStore } from "@/lib/stores/issue-store";
 import { StatusBadge } from "@/components/status-badge";
 import type { Status } from "@/lib/constants";

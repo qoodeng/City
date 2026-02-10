@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/tooltip";
 
 export function IssuesPageClient() {
-  const { issues, loading, fetchIssues } = useIssueStore();
+  const { issues, loading } = useIssueStore();
   const showSkeleton = useDeferredLoading(loading);
   const { viewMode, setViewMode, setCreateIssueDialogOpen } = useUIStore();
   const filters = useFilters();

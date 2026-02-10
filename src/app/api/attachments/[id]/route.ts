@@ -3,7 +3,6 @@ import { db } from "@/lib/db";
 import { attachments } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import fs from "fs/promises";
-import path from "path";
 
 export const GET = async (
     req: NextRequest,
@@ -34,8 +33,7 @@ export const GET = async (
             return new NextResponse("File not found on disk", { status: 404 });
         }
 
-    } catch (error) {
-        console.error("Get attachment error:", error);
+    } catch {
         return new NextResponse("Internal Error", { status: 500 });
     }
 };
@@ -67,7 +65,7 @@ export const DELETE = async (
         }
 
         return NextResponse.json({ success: true });
-    } catch (error) {
+    } catch {
         return new NextResponse("Internal Error", { status: 500 });
     }
 }

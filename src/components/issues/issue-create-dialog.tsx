@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -52,7 +51,10 @@ export function IssueCreateDialog() {
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
+  // Reset form when dialog opens / clear parent when it closes (synchronous state adjustment)
+  const [prevOpen, setPrevOpen] = useState(false);
+  if (createIssueDialogOpen !== prevOpen) {
+    setPrevOpen(createIssueDialogOpen);
     if (createIssueDialogOpen) {
       setTitle("");
       setStatus("backlog");
@@ -65,7 +67,7 @@ export function IssueCreateDialog() {
     } else {
       setCreateIssueParentId(null);
     }
-  }, [createIssueDialogOpen, setCreateIssueParentId]);
+  }
 
   const handleSubmit = async () => {
     if (!title.trim() || submitting) return;

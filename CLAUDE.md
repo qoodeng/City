@@ -49,10 +49,13 @@ pnpm dist             # Build Electron distributable (scripts/build-electron.sh)
 
 ### Database
 
-- Schema in `src/lib/db/schema.ts` — 5 tables: `projects`, `issues`, `labels`, `issue_labels` (junction), `counters`
+- Schema in `src/lib/db/schema.ts` — 7 tables: `projects`, `issues`, `labels`, `issue_labels` (junction), `comments`, `attachments`, `counters`
 - FTS5 virtual table `issues_fts` for full-text search on issue title/description, kept in sync via triggers
 - Issue numbering: atomic counter in `counters` table, incremented inside a transaction
 - DB singleton in `src/lib/db/index.ts` with WAL mode + foreign keys pragma
+- IDs generated via `nanoid` (see `src/lib/api-utils.ts`)
+- Zod request validation in `src/lib/validation.ts`
+- XSS sanitization via DOMPurify in `src/lib/sanitize.ts`
 
 ### API Routes
 
@@ -64,13 +67,15 @@ pnpm dist             # Build Electron distributable (scripts/build-electron.sh)
 - `search/` route uses FTS5 for full-text issue search
 - `dashboard/` route aggregates stats for the dashboard view
 - `batch/` route for bulk issue operations
+- `[issueId]/comments/` for comment CRUD, `upload/` + `attachments/` for file handling
 
 ### Stores (zustand)
 
 - **issue-store**: Optimistic updates — saves prev state, applies change, reverts on API failure
 - **ui-store**: sidebarCollapsed, commandPaletteOpen, createIssueDialogOpen, viewMode, selectedIssueIds, focusedIssueId
+- **comment-store**: Comment CRUD per issue
 - **label-store** / **project-store**: Standard CRUD
-- **undo-store**: Capped stack (50 entries, 10min expiry) for undo across create/update/delete on any entity
+- **undo-store**: Capped stack (50 entries, 10min expiry) for undo across create/update/delete on any entity; `src/lib/undo-executor.ts` orchestrates undo/redo actions
 - **sync-store**: Tracks pending API request count + last error for sync status indicator
 - **keyboard-store**: Key buffer with 500ms timeout for vim-style multi-key sequences + last action repeat
 
@@ -84,6 +89,7 @@ pnpm dist             # Build Electron distributable (scripts/build-electron.sh)
 
 - **Status**: backlog, todo, in_progress, done, cancelled
 - **Priority**: urgent, high, medium, low, none
+- **Project status**: active, paused, completed, archived
 
 ### Theme
 
@@ -95,6 +101,7 @@ pnpm dist             # Build Electron distributable (scripts/build-electron.sh)
 
 ### Unit Tests (Vitest + jsdom)
 
+- Vitest `globals: true` — `describe`, `it`, `expect` are available without imports
 - Test setup in `src/test/setup.ts` — mocks `next/navigation`, `next/dynamic`, and `sonner`
 - `src/test/db.ts`: `createTestDb()` / `cleanupTestDb()` — creates isolated temp SQLite databases (including FTS5 tables and triggers) for API route tests
 - `src/test/api-helpers.ts`: `createRequest()`, `createParams()`, `parseResponse()` — helpers for testing Next.js API route handlers directly
@@ -107,6 +114,13 @@ pnpm dist             # Build Electron distributable (scripts/build-electron.sh)
 - Test files in `e2e/` directory
 - Auto-starts dev server on localhost:3000
 - Chromium only, HTML reporter
+
+### Electron
+
+- Main process in `src/electron/main.ts`, preload in `src/electron/preload.ts`
+- `src/electron/backup-service.ts` — auto-backup to `~/Documents/C.I.T.Y-backups`
+- Build scripts in `scripts/` — `build-electron.sh`, `generate-icon.ts`, `patch-electron-plist.sh`
+- Compiled to `dist-electron/` via `tsconfig.electron.json`
 
 ## React Performance Rules
 

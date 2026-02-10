@@ -18,8 +18,9 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         const timer = setTimeout(() => {
             setIsVisible(false);
             // Show window controls (macOS)
-            if (typeof window !== "undefined" && (window as any).electron) {
-                (window as any).electron.send("city:set-window-controls", true);
+            const win = window as unknown as { electron?: { send: (ch: string, v: boolean) => void } };
+            if (typeof window !== "undefined" && win.electron) {
+                win.electron.send("city:set-window-controls", true);
             }
             setTimeout(() => onComplete?.(), 500); // Wait for exit animation
         }, 1500);

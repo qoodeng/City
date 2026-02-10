@@ -6,7 +6,6 @@ import {
   parseAsString,
   parseAsStringEnum,
 } from "nuqs";
-import { STATUSES, PRIORITIES } from "@/lib/constants";
 import { useCallback, useMemo } from "react";
 
 const sortOptions = ["created", "updated", "priority", "due_date", "title", "number"] as const;
@@ -53,20 +52,6 @@ export function useFilters() {
     setLabelFilter([]);
     setSearch(null);
   }, [setStatusFilter, setPriorityFilter, setProjectFilter, setLabelFilter, setSearch]);
-
-  const toQueryParams = useCallback(() => {
-    const params: Record<string, string> = {};
-    if (statusFilter.length > 0) {
-      statusFilter.forEach((s) => {
-        // Multiple values need to be appended
-      });
-    }
-    if (sort) params.sort = sort;
-    if (order) params.order = order;
-    if (search) params.search = search;
-    if (projectFilter) params.projectId = projectFilter;
-    return params;
-  }, [statusFilter, priorityFilter, projectFilter, labelFilter, search, sort, order]);
 
   const buildSearchParams = useCallback(() => {
     const sp = new URLSearchParams();

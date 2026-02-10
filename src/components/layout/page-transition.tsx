@@ -3,12 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useContext, useRef } from "react";
+import { useContext, useState } from "react";
 
 // Fix for Next.js 13+ AnimatePresence issue: https://github.com/framer/motion/issues/1850#issuecomment-1973602283
 function FrozenRouter(props: { children: React.ReactNode }) {
     const context = useContext(LayoutRouterContext ?? {});
-    const frozen = useRef(context).current;
+    // Capture context on first render, never update — so exit animations use the old route context
+    const [frozen] = useState(context);
 
     return (
         <LayoutRouterContext.Provider value={frozen}>

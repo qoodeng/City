@@ -23,12 +23,10 @@ import {
   STATUS_CONFIG,
   PRIORITIES,
   PRIORITY_CONFIG,
-  type Status,
-  type Priority,
 } from "@/lib/constants";
 import { useLabelStore } from "@/lib/stores/label-store";
 import { useProjectStore } from "@/lib/stores/project-store";
-import { Check, Filter, X, Search } from "lucide-react";
+import { Check, X, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FilterProps {

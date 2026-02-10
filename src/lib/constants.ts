@@ -96,16 +96,3 @@ export const PROJECT_COLORS = [
   "#FFD700",
   "#14B8A6",
 ] as const;
-
-export const PROJECT_ICONS = [
-  "folder",
-  "rocket",
-  "zap",
-  "target",
-  "box",
-  "layers",
-  "globe",
-  "shield",
-  "heart",
-  "star",
-] as const;

@@ -6,7 +6,6 @@ import { STATUS_CONFIG, STATUSES, type Status } from "@/lib/constants";
 import { StatusBadge } from "@/components/status-badge";
 import { IssueListRow } from "./issue-list-row";
 import type { IssueWithLabels } from "@/types";
-import { cn } from "@/lib/utils";
 import { EmptyState } from "@/components/empty-state";
 import { useIssueStore } from "@/lib/stores/issue-store";
 

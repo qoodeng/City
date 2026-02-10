@@ -3,7 +3,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { issues, issueLabels, labels, projects } from "@/lib/db/schema";
 import { jsonResponse, errorResponse } from "@/lib/api-utils";
-import { eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { restoreIssueSchema } from "@/lib/validation";
 
 export async function POST(request: NextRequest) {

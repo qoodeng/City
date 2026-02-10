@@ -46,6 +46,9 @@ next-env.d.ts
 *.db-shm
 /drizzle/
 
+# user uploads
+/uploads/
+
 # electron build output
 /dist/
 /dist-electron/

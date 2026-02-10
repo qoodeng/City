@@ -33,7 +33,6 @@ export function KeyboardShortcutHandler() {
         setCommandPaletteOpen,
         createIssueDialogOpen,
         setCreateIssueDialogOpen,
-        viewMode,
         setViewMode,
         toggleSidebar,
         focusedIssueId,

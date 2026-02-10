@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
     const id = generateId();
 
     // Atomic counter increment
-    const result = db.transaction((tx) => {
+    db.transaction((tx) => {
       tx.update(counters)
         .set({ value: sql`${counters.value} + 1` })
         .where(eq(counters.id, "issue_counter"))

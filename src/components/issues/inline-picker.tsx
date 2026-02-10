@@ -25,8 +25,6 @@ import {
   type Status,
   type Priority,
 } from "@/lib/constants";
-import { cn } from "@/lib/utils";
-
 export function InlinePicker() {
   const { inlinePicker, setInlinePicker } = useUIStore();
   const updateIssue = useIssueStore((s) => s.updateIssue);

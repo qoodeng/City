@@ -4,15 +4,6 @@ import { attachments } from "@/lib/db/schema";
 import { nanoid } from "nanoid";
 import path from "path";
 import fs from "fs/promises";
-import { app } from "electron"; // Cannot import 'electron' in Next.js server code directly in some setups? 
-// Wait, in Electron environment, Next.js runs in Node. But 'electron' module might not be available if not bundled correctly.
-// Instead, use process.env.APPDATA or similar, or just a known path.
-// Actually, for Electron + Next.js, we can check process.env.userDataPath if we passed it?
-// Or assume standard paths.
-
-// Better: In development, use local folder. In prod, use userData.
-// But we need to know WHERE userData is.
-// Main process can pass it via process.env.USER_DATA_PATH?
 
 export const POST = async (req: NextRequest) => {
     try {
@@ -29,7 +20,6 @@ export const POST = async (req: NextRequest) => {
 
         const buffer = Buffer.from(await file.arrayBuffer());
         const id = nanoid();
-        const ext = path.extname(file.name);
         const filename = file.name;
         const safeFilename = `${id}_${filename.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
 

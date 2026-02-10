@@ -82,6 +82,18 @@ export function createTestDb(): TestDb {
 
     CREATE INDEX IF NOT EXISTS idx_comments_issue_id ON comments(issue_id);
 
+    CREATE TABLE IF NOT EXISTS attachments (
+      id TEXT PRIMARY KEY,
+      issue_id TEXT NOT NULL REFERENCES issues(id) ON DELETE CASCADE,
+      filename TEXT NOT NULL,
+      filepath TEXT NOT NULL,
+      mime_type TEXT NOT NULL,
+      size INTEGER NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_attachments_issue_id ON attachments(issue_id);
+
     CREATE TABLE IF NOT EXISTS counters (
       id TEXT PRIMARY KEY,
       value INTEGER NOT NULL DEFAULT 0

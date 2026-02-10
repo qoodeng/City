@@ -1,10 +1,12 @@
-import { app, BrowserWindow, shell, nativeImage, ipcMain } from "electron";
+import { app, BrowserWindow, shell, nativeImage, ipcMain, utilityProcess } from "electron";
 import path from "path";
 import { autoUpdater } from "electron-updater";
 import { BackupService } from "./backup-service";
 
 // Check if we are in development mode
-const isDev = process.env.NODE_ENV !== "production";
+// app.isPackaged is the reliable way to detect packaged Electron apps
+// (NODE_ENV is not automatically set in packaged builds)
+const isDev = !app.isPackaged;
 const PORT = 3000;
 
 let mainWindow: BrowserWindow | null = null;
@@ -36,6 +38,7 @@ const createWindow = () => {
         icon: iconPath,
         width: 1280,
         height: 800,
+        show: false, // Don't show until content is ready
         webPreferences: {
             preload: path.join(__dirname, "preload.js"),
             nodeIntegration: false,
@@ -46,19 +49,34 @@ const createWindow = () => {
         backgroundColor: "#000000",
     });
 
-    const startUrl = isDev
-        ? `http://localhost:${PORT}`
-        : `http://localhost:${PORT}`; // In prod, we still use localhost because we spawn the server
+    const startUrl = `http://localhost:${PORT}`;
+
+    // Show window once content has loaded
+    mainWindow.once("ready-to-show", () => {
+        mainWindow?.show();
+    });
+
+    // Retry loading if server isn't ready yet (ERR_CONNECTION_REFUSED, etc.)
+    let retryCount = 0;
+    const maxRetries = 10;
+    mainWindow.webContents.on("did-fail-load", (_event, errorCode, errorDescription) => {
+        console.log(`Page load failed (attempt ${retryCount + 1}): ${errorDescription} (${errorCode})`);
+        if (retryCount < maxRetries && mainWindow && !mainWindow.isDestroyed()) {
+            retryCount++;
+            const delay = Math.min(500 * retryCount, 3000);
+            setTimeout(() => {
+                if (mainWindow && !mainWindow.isDestroyed()) {
+                    console.log(`Retrying load (attempt ${retryCount})...`);
+                    mainWindow.loadURL(startUrl);
+                }
+            }, delay);
+        }
+    });
 
     mainWindow.loadURL(startUrl);
 
-    // Permission request handler (allows all except unspecified deletion which doesn't exist as a distinct permission)
-    mainWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
-        // Standard Web APIs: 'media', 'geolocation', 'notifications', 'midiSysex', 'pointerLock', 'fullscreen', 'openExternal'
-        // There is no explicit 'file-deletion' permission in standard web APIs.
-        // If using File System Access API, 'file-system' covers read/write.
-        // We allow all permissions as requested.
-        // We allow all permissions as requested.
+    // Permission request handler
+    mainWindow.webContents.session.setPermissionRequestHandler((_webContents, _permission, callback) => {
         return callback(true);
     });
 
@@ -168,23 +186,20 @@ async function startNextServer() {
 
             console.log("Starting production server from:", serverPath);
 
-            const serverProcess = require("child_process").spawn(
-                process.execPath,
-                [serverPath],
-                {
-                    env: {
-                        ...process.env,
-                        NODE_ENV: "production",
-                        PORT: "3000",
-                        HOSTNAME: "127.0.0.1",
-                        ELECTRON_RUN_AS_NODE: "1",
-                    },
-                    cwd: path.dirname(serverPath),
-                    stdio: "pipe",
-                }
-            );
+            // Use utilityProcess.fork() instead of child_process.spawn()
+            // to avoid a second dock icon on macOS
+            const serverProcess = utilityProcess.fork(serverPath, [], {
+                env: {
+                    ...process.env,
+                    NODE_ENV: "production",
+                    PORT: "3000",
+                    HOSTNAME: "127.0.0.1",
+                },
+                cwd: path.dirname(serverPath),
+                stdio: "pipe",
+            });
 
-            serverProcess.stdout.on("data", (data: Buffer) => {
+            serverProcess.stdout?.on("data", (data: Buffer) => {
                 const str = data.toString();
                 console.log("Next.js:", str);
                 if (str.includes("Ready")) {
@@ -192,16 +207,15 @@ async function startNextServer() {
                 }
             });
 
-            serverProcess.stderr.on("data", (data: Buffer) => {
+            serverProcess.stderr?.on("data", (data: Buffer) => {
                 console.error("Next.js Error:", data.toString());
             });
 
-            serverProcess.on("error", (err: Error) => {
-                console.error("Failed to spawn server process:", err);
-                reject(err);
+            serverProcess.on("spawn", () => {
+                console.log("Next.js server process spawned");
             });
 
-            serverProcess.on("close", (code: number) => {
+            serverProcess.on("exit", (code: number) => {
                 console.log(`Next.js server exited with code ${code}`);
             });
 

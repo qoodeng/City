@@ -39,3 +39,23 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database
+*.db
+*.db-wal
+*.db-shm
+/drizzle/
+
+# electron build output
+/dist/
+/dist-electron/
+
+# test output
+/test-results/
+/playwright-report/
+/semgrep-results-001/
+
+# temp files
+package.json.tmp
+logo-concepts.html
+logo-dummy-head.html

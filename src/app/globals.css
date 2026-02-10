@@ -1,26 +1,253 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* C.I.T.Y. custom colors */
+  --color-city-yellow: #FFD700;
+  --color-city-yellow-dim: #B8A000;
+  --color-city-yellow-bright: #FFE44D;
+  --color-city-black: #000000;
+  --color-city-surface: #1A1A1A;
+  --color-city-surface-hover: #1F1F1F;
+  --color-city-surface-active: #2A2A2A;
+  --color-city-border: #2A2A2A;
+
+  /* Status colors */
+  --color-status-backlog: #6B7280;
+  --color-status-todo: #A1A1AA;
+  --color-status-in-progress: #FFD700;
+  --color-status-done: #22C55E;
+  --color-status-cancelled: #EF4444;
+
+  /* Priority colors */
+  --color-priority-urgent: #EF4444;
+  --color-priority-high: #F97316;
+  --color-priority-medium: #FFD700;
+  --color-priority-low: #6B7280;
+  --color-priority-none: #4B5563;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.5rem;
+  /* C.I.T.Y. crash test dummy theme — always dark */
+  --background: #000000;
+  --foreground: #E5E5E5;
+  --card: #1A1A1A;
+  --card-foreground: #E5E5E5;
+  --popover: #1A1A1A;
+  --popover-foreground: #E5E5E5;
+  --primary: #FFD700;
+  --primary-foreground: #000000;
+  --secondary: #1F1F1F;
+  --secondary-foreground: #E5E5E5;
+  --muted: #1F1F1F;
+  --muted-foreground: #737373;
+  --accent: #2A2A2A;
+  --accent-foreground: #E5E5E5;
+  --destructive: #EF4444;
+  --border: #2A2A2A;
+  --input: #2A2A2A;
+  --ring: #FFD700;
+  --chart-1: #FFD700;
+  --chart-2: #22C55E;
+  --chart-3: #3B82F6;
+  --chart-4: #F97316;
+  --chart-5: #A855F7;
+  --sidebar: #111111;
+  --sidebar-foreground: #E5E5E5;
+  --sidebar-primary: #FFD700;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1F1F1F;
+  --sidebar-accent-foreground: #E5E5E5;
+  --sidebar-border: #2A2A2A;
+  --sidebar-ring: #FFD700;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Hazard stripe pattern */
+.hazard-stripe {
+  background: repeating-linear-gradient(-45deg,
+      #FFD700,
+      #FFD700 10px,
+      #0A0A0A 10px,
+      #0A0A0A 20px);
+}
+
+.hazard-stripe-thin {
+  background: repeating-linear-gradient(-45deg,
+      #FFD700,
+      #FFD700 4px,
+      #0A0A0A 4px,
+      #0A0A0A 8px);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A2A2A;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3A3A3A;
+}
+
+/* Content fade-in — used when data arrives to prevent abrupt pop-in */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Skeleton shimmer effect */
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+/* Staggered row-entry animation */
+@keyframes stagger-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-stagger-in {
+  animation: stagger-fade-in 0.2s ease-out backwards;
+}
+
+/* TipTap editor styles */
+
+.tiptap {
+  outline: none;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #737373;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap p {
+  margin: 0.5em 0;
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  font-weight: 600;
+  margin: 1em 0 0.5em;
+}
+
+.tiptap ul,
+.tiptap ol {
+  padding-left: 1.5em;
+  margin: 0.5em 0;
+}
+
+.tiptap li {
+  margin: 0.25em 0;
+}
+
+.tiptap code {
+  background: #2A2A2A;
+  border-radius: 4px;
+  padding: 0.15em 0.3em;
+  font-size: 0.9em;
+}
+
+.tiptap pre {
+  background: #1A1A1A;
+  border-radius: 6px;
+  padding: 0.75em 1em;
+  margin: 0.5em 0;
+  overflow-x: auto;
+}
+
+.tiptap pre code {
+  background: none;
+  padding: 0;
+}
+
+.tiptap blockquote {
+  border-left: 3px solid #FFD700;
+  padding-left: 1em;
+  margin: 0.5em 0;
+  color: #A3A3A3;
+}
+
+.tiptap hr {
+  border-color: #2A2A2A;
+  margin: 1em 0;
 }

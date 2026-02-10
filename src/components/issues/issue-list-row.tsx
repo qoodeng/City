@@ -1,0 +1,204 @@
+"use client";
+
+import Link from "next/link";
+import { StatusBadge } from "@/components/status-badge";
+import { PriorityIcon } from "@/components/priority-icon";
+import { LabelBadge } from "@/components/label-badge";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import type { IssueWithLabels } from "@/types";
+import {
+  STATUSES,
+  STATUS_CONFIG,
+  PRIORITIES,
+  PRIORITY_CONFIG,
+  type Status,
+  type Priority,
+} from "@/lib/constants";
+import { cn } from "@/lib/utils";
+import { useUIStore } from "@/lib/stores/ui-store";
+import { useIssueStore } from "@/lib/stores/issue-store";
+import { useUndoStore } from "@/lib/stores/undo-store";
+import { executeUndo } from "@/lib/undo-executor";
+import { Calendar, MessageSquare, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+
+export function IssueListRow({ issue, depth = 0, animationIndex = 0 }: { issue: IssueWithLabels; depth?: number; animationIndex?: number }) {
+  const { focusedIssueId } = useUIStore();
+  const { updateIssue, deleteIssue } = useIssueStore();
+  const isFocused = focusedIssueId === issue.id;
+  const isOverdue =
+    issue.dueDate &&
+    new Date(issue.dueDate) < new Date() &&
+    issue.status !== "done";
+
+  const handleStatusChange = (status: string) => {
+    updateIssue(issue.id, { status });
+  };
+
+  const handlePriorityChange = (priority: string) => {
+    updateIssue(issue.id, { priority });
+  };
+
+  const handleDelete = async () => {
+    const success = await deleteIssue(issue.id);
+    if (success) {
+      const entry = useUndoStore.getState().peekUndo();
+      toast.success(`Deleted CITY-${issue.number}`, {
+        action: entry
+          ? { label: "Undo", onClick: () => executeUndo(entry) }
+          : undefined,
+      });
+    }
+  };
+
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <Link
+          href={`/issues/${issue.id}`}
+          className={cn(
+            "flex items-center gap-3 h-10 px-4 text-sm border-b border-border/50 transition-colors hover:bg-city-surface-hover group animate-stagger-in",
+            isFocused && "bg-city-yellow/10 ring-1 ring-inset ring-city-yellow/50 border-l-2 !border-l-city-yellow",
+            depth > 0 && "relative"
+          )}
+          style={{
+            contentVisibility: "auto",
+            containIntrinsicSize: "0 40px",
+            animationDelay: `${animationIndex * 30}ms`,
+            ...(depth > 0 ? { paddingLeft: `${16 + depth * 24}px` } : {}),
+          }}
+          data-issue-id={issue.id}
+        >
+          {depth > 0 && (
+            <>
+              {/* Vertical tree line */}
+              <span
+                className="absolute top-0 bottom-0 w-px bg-border"
+                style={{ left: `${8 + (depth - 1) * 24}px` }}
+              />
+              {/* Horizontal connector */}
+              <span
+                className="absolute w-3 h-px bg-border"
+                style={{ left: `${8 + (depth - 1) * 24}px`, top: "50%" }}
+              />
+            </>
+          )}
+          <StatusBadge status={issue.status as Status} size={14} />
+          <PriorityIcon priority={issue.priority as Priority} size={14} />
+          <span className="text-xs text-muted-foreground font-mono w-16 shrink-0">
+            CITY-{issue.number}
+          </span>
+          <span className="flex-1 truncate">{issue.title}</span>
+
+          {issue.labels.length > 0 && (
+            <div className="flex items-center gap-1 shrink-0">
+              {issue.labels.slice(0, 3).map((label) => (
+                <LabelBadge
+                  key={label.id}
+                  name={label.name}
+                  color={label.color}
+                />
+              ))}
+              {issue.labels.length > 3 && (
+                <span className="text-xs text-muted-foreground">
+                  +{issue.labels.length - 3}
+                </span>
+              )}
+            </div>
+          )}
+
+          {issue.dueDate && (
+            <div
+              className={cn(
+                "flex items-center gap-1 text-xs shrink-0",
+                isOverdue ? "text-destructive" : "text-muted-foreground"
+              )}
+            >
+              <Calendar className="w-3 h-3" />
+              {new Date(issue.dueDate).toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              })}
+            </div>
+          )}
+
+          {issue.commentCount ? (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+              <MessageSquare className="w-3 h-3" />
+              {issue.commentCount}
+            </div>
+          ) : null}
+
+          {issue.project && (
+            <div className="flex items-center gap-1.5 shrink-0">
+              <div
+                className="w-2 h-2 rounded-sm"
+                style={{ backgroundColor: issue.project.color }}
+              />
+              <span className="text-xs text-muted-foreground truncate max-w-20">
+                {issue.project.name}
+              </span>
+            </div>
+          )}
+
+          {issue.assignee && (
+            <div className="w-5 h-5 rounded-full bg-city-yellow/20 flex items-center justify-center text-[11px] text-city-yellow font-medium shrink-0">
+              {issue.assignee[0]?.toUpperCase()}
+            </div>
+          )}
+        </Link>
+      </ContextMenuTrigger>
+
+      <ContextMenuContent className="w-48">
+        <ContextMenuSub>
+          <ContextMenuSubTrigger>Status</ContextMenuSubTrigger>
+          <ContextMenuSubContent>
+            {STATUSES.map((status) => (
+              <ContextMenuItem
+                key={status}
+                onClick={() => handleStatusChange(status)}
+              >
+                <StatusBadge status={status} size={12} />
+                <span className="ml-2">{STATUS_CONFIG[status].label}</span>
+              </ContextMenuItem>
+            ))}
+          </ContextMenuSubContent>
+        </ContextMenuSub>
+
+        <ContextMenuSub>
+          <ContextMenuSubTrigger>Priority</ContextMenuSubTrigger>
+          <ContextMenuSubContent>
+            {PRIORITIES.map((priority) => (
+              <ContextMenuItem
+                key={priority}
+                onClick={() => handlePriorityChange(priority)}
+              >
+                <PriorityIcon priority={priority} size={12} />
+                <span className="ml-2">{PRIORITY_CONFIG[priority].label}</span>
+              </ContextMenuItem>
+            ))}
+          </ContextMenuSubContent>
+        </ContextMenuSub>
+
+        <ContextMenuSeparator />
+
+        <ContextMenuItem
+          className="text-destructive"
+          onClick={handleDelete}
+        >
+          <Trash2 className="w-3.5 h-3.5 mr-2" />
+          Delete
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+}

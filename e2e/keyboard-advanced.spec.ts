@@ -129,7 +129,7 @@ test.describe("Advanced Keyboard Shortcuts", () => {
     await page.keyboard.press("Backspace");
 
     // Should see deletion toast
-    await expect(page.getByText(/Deleted CITY-/)).toBeVisible();
+    await expect(page.getByText(/Deleted City-/)).toBeVisible();
 
     // Verify via API
     await page.waitForTimeout(500);

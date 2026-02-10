@@ -329,7 +329,7 @@ export function KeyboardShortcutHandler() {
           keyboard.clearBuffer();
           deleteIssue(focusedIssue.id).then((success) => {
             if (success) {
-              toast.success(`Deleted CITY-${focusedIssue.number}`);
+              toast.success(`Deleted City-${focusedIssue.number}`);
             }
           });
           return;

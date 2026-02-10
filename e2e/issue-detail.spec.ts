@@ -5,7 +5,7 @@ test.describe("Issue Detail", () => {
     const issue = await api.createIssue({ title: "Detail Load Test" });
 
     await page.goto(`/issues/${issue.id}`);
-    await expect(page.getByText(`CITY-${issue.number}`)).toBeVisible();
+    await expect(page.getByText(`City-${issue.number}`)).toBeVisible();
     await expect(page.getByText("Detail Load Test")).toBeVisible();
   });
 

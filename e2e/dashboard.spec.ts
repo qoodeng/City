@@ -3,7 +3,7 @@ import { test, expect } from "./fixtures";
 test.describe("Dashboard", () => {
   test("loads with title and status overview", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveTitle(/C.I.T.Y./);
+    await expect(page).toHaveTitle(/City/);
     await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
     await expect(page.getByText("Status Overview")).toBeVisible();
   });

@@ -5,6 +5,7 @@ import { labels } from "@/lib/db/schema";
 import { jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq } from "drizzle-orm";
 import { updateLabelSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 export async function PATCH(
   request: NextRequest,
@@ -40,7 +41,7 @@ export async function PATCH(
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error updating label:", error);
+    logger.error(error, "Error updating label");
     return errorResponse("Failed to update label", 500);
   }
 }

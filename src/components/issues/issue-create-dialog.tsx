@@ -89,7 +89,7 @@ export function IssueCreateDialog() {
 
     if (issue) {
       const entry = useUndoStore.getState().peekUndo();
-      toast.success(`Created CITY-${issue.number}`, {
+      toast.success(`Created City-${issue.number}`, {
         action: entry
           ? { label: "Undo", onClick: () => executeUndo(entry) }
           : undefined,
@@ -129,7 +129,7 @@ export function IssueCreateDialog() {
             Create Issue
             {parentIssue && (
               <span className="ml-2 text-xs font-normal text-muted-foreground bg-city-surface px-2 py-0.5 rounded">
-                Sub-issue of CITY-{parentIssue.number}
+                Sub-issue of City-{parentIssue.number}
               </span>
             )}
           </DialogTitle>

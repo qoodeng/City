@@ -5,6 +5,7 @@ import { comments, issues } from "@/lib/db/schema";
 import { generateId, jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq, asc } from "drizzle-orm";
 import { createCommentSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 export async function GET(
   _request: NextRequest,
@@ -58,7 +59,7 @@ export async function POST(
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error creating comment:", error);
+    logger.error(error, "Error creating comment");
     return errorResponse("Failed to create comment", 500);
   }
 }

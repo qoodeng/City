@@ -60,7 +60,7 @@ export function Sidebar() {
           </svg>
           {!sidebarCollapsed && (
             <span className="font-bold text-city-yellow tracking-wider text-sm">
-              C.I.T.Y.
+              City
             </span>
           )}
         </Link>

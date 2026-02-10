@@ -1,6 +1,19 @@
 #!/bin/bash
 set -e
 
+# Code Signing & Notarization (set these env vars for signed builds):
+#   CSC_LINK          — path to .p12 certificate (or base64-encoded)
+#   CSC_KEY_PASSWORD   — certificate password
+#   APPLE_ID          — Apple ID email for notarization
+#   APPLE_APP_SPECIFIC_PASSWORD — app-specific password (generate at appleid.apple.com)
+#   APPLE_TEAM_ID     — Apple Developer Team ID
+#
+# Without these, the build produces an unsigned/ad-hoc binary (fine for local dev).
+
+if [ -z "$CSC_LINK" ]; then
+  echo "⚠️  CSC_LINK not set — building unsigned (ad-hoc). Set code signing env vars for distribution builds."
+fi
+
 # 1. Clean previous build artifacts
 echo "🧹 Cleaning previous builds..."
 rm -rf dist || true

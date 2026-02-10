@@ -2,6 +2,7 @@ import { NextRequest } from "next/server";
 import { getSqlite } from "@/lib/db";
 import { jsonResponse, errorResponse } from "@/lib/api-utils";
 import { escapeFts5Query, parsePaginationInt } from "@/lib/sanitize";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
 
     return jsonResponse(results);
   } catch (error) {
-    console.error("FTS search error:", error);
+    logger.error(error, "FTS search error");
     return errorResponse("Search failed", 500);
   }
 }

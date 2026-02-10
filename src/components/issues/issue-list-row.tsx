@@ -52,7 +52,7 @@ export function IssueListRow({ issue, depth = 0, animationIndex = 0 }: { issue: 
     const success = await deleteIssue(issue.id);
     if (success) {
       const entry = useUndoStore.getState().peekUndo();
-      toast.success(`Deleted CITY-${issue.number}`, {
+      toast.success(`Deleted City-${issue.number}`, {
         action: entry
           ? { label: "Undo", onClick: () => executeUndo(entry) }
           : undefined,
@@ -95,7 +95,7 @@ export function IssueListRow({ issue, depth = 0, animationIndex = 0 }: { issue: 
           <StatusBadge status={issue.status as Status} size={14} />
           <PriorityIcon priority={issue.priority as Priority} size={14} />
           <span className="text-xs text-muted-foreground font-mono w-16 shrink-0">
-            CITY-{issue.number}
+            City-{issue.number}
           </span>
           <span className="flex-1 truncate">{issue.title}</span>
 

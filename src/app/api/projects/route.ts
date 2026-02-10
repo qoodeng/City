@@ -5,6 +5,7 @@ import { projects, issues } from "@/lib/db/schema";
 import { generateId, jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq, sql } from "drizzle-orm";
 import { createProjectSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 export async function GET() {
   const [allProjects, counts] = await Promise.all([
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error creating project:", error);
+    logger.error(error, "Error creating project");
     return errorResponse("Failed to create project", 500);
   }
 }

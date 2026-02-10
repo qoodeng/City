@@ -5,6 +5,7 @@ import { projects } from "@/lib/db/schema";
 import { jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq } from "drizzle-orm";
 import { restoreProjectSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error restoring project:", error);
+    logger.error(error, "Error restoring project");
     return errorResponse("Failed to restore project", 500);
   }
 }

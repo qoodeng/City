@@ -12,7 +12,7 @@ const PORT = 3000;
 let mainWindow: BrowserWindow | null = null;
 
 // Set app name (shows in macOS menu bar)
-app.setName("C.I.T.Y.");
+app.setName("City");
 
 // Set dock icon on macOS
 const iconPath = isDev
@@ -34,7 +34,7 @@ if (process.platform === "darwin") {
 
 const createWindow = () => {
     mainWindow = new BrowserWindow({
-        title: "C.I.T.Y.",
+        title: "City",
         icon: iconPath,
         width: 1280,
         height: 800,

@@ -5,6 +5,7 @@ import { labels } from "@/lib/db/schema";
 import { jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq } from "drizzle-orm";
 import { restoreLabelSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,7 +36,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error restoring label:", error);
+    logger.error(error, "Error restoring label");
     return errorResponse("Failed to restore label", 500);
   }
 }

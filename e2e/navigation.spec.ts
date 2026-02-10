@@ -37,17 +37,17 @@ test.describe("Navigation", () => {
 
     // Sidebar should show full text initially
     const sidebar = page.locator("aside");
-    await expect(sidebar.getByText("C.I.T.Y.")).toBeVisible();
+    await expect(sidebar.getByText("City")).toBeVisible();
 
     // Toggle sidebar via keyboard shortcut (Cmd+/)
     await page.keyboard.press("Meta+/");
 
     // Sidebar should be collapsed — full text links should be hidden
-    await expect(sidebar.getByText("C.I.T.Y.")).toBeHidden();
+    await expect(sidebar.getByText("City")).toBeHidden();
 
     // Expand again
     await page.keyboard.press("Meta+/");
-    await expect(sidebar.getByText("C.I.T.Y.")).toBeVisible();
+    await expect(sidebar.getByText("City")).toBeVisible();
   });
 
   test("active link is highlighted", async ({ page }) => {

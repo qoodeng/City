@@ -16,8 +16,8 @@ const jetbrainsMono = JetBrains_Mono({
 import { GlobalErrorBoundary } from "@/components/layout/global-error-boundary";
 
 export const metadata: Metadata = {
-  title: "C.I.T.Y.",
-  description: "Christian's Issue Tracker Yellow",
+  title: "City",
+  description: "City — Issue Tracker",
 };
 
 export default function RootLayout({

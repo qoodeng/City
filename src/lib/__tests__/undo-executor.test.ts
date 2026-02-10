@@ -24,7 +24,7 @@ const makeUndoEntry = (overrides: Partial<UndoEntry> = {}): UndoEntry => ({
   actionType: "delete",
   entityType: "issue",
   entityId: "issue-1",
-  description: "CITY-1",
+  description: "City-1",
   previousState: { id: "issue-1", title: "Test Issue", number: 1 },
   timestamp: Date.now(),
   ...overrides,

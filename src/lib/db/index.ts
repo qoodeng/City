@@ -1,5 +1,6 @@
 import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
+import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import * as schema from "./schema";
 import path from "path";
 
@@ -45,11 +46,24 @@ function initFts(db: Database.Database) {
   }
 }
 
+function getMigrationsFolder(): string {
+  // In Electron production, migrations are bundled alongside the server
+  if (process.env.NODE_ENV === "production" && process.resourcesPath) {
+    return path.join(process.resourcesPath, "server", "drizzle");
+  }
+  return path.join(process.cwd(), "drizzle");
+}
+
 function getSqlite() {
   if (!sqlite) {
     sqlite = new Database(DB_PATH);
     sqlite.pragma("journal_mode = WAL");
     sqlite.pragma("foreign_keys = ON");
+
+    // Run Drizzle migrations (applies only pending ones, no-op if up to date)
+    const orm = drizzle(sqlite, { schema });
+    migrate(orm, { migrationsFolder: getMigrationsFolder() });
+
     initFts(sqlite);
   }
   return sqlite;

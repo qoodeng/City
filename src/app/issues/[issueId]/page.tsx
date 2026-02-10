@@ -141,7 +141,7 @@ export default function IssueDetailPage() {
     const success = await deleteIssue(issue.id);
     if (success) {
       const entry = useUndoStore.getState().peekUndo();
-      toast.success(`Deleted CITY-${issue.number}`, {
+      toast.success(`Deleted City-${issue.number}`, {
         action: entry
           ? { label: "Undo", onClick: () => executeUndo(entry) }
           : undefined,
@@ -174,14 +174,14 @@ export default function IssueDetailPage() {
               href={`/issues/${issue.parent.id}`}
               className="text-xs text-muted-foreground font-mono hover:text-city-yellow transition-colors"
             >
-              CITY-{issue.parent.number}
+              City-{issue.parent.number}
             </Link>
             <ChevronRight className="w-3 h-3 text-muted-foreground" />
           </>
         )}
         {issue && (
           <span className="text-xs text-muted-foreground font-mono">
-            CITY-{issue.number}
+            City-{issue.number}
           </span>
         )}
         <div className="flex-1" />
@@ -295,7 +295,7 @@ export default function IssueDetailPage() {
                           <StatusBadge status={child.status as Status} size={12} />
                           <PriorityIcon priority={child.priority as Priority} size={12} />
                           <span className="text-xs text-muted-foreground font-mono shrink-0">
-                            CITY-{child.number}
+                            City-{child.number}
                           </span>
                           <span className="flex-1 truncate">{child.title}</span>
                           {child.labels.length > 0 && (

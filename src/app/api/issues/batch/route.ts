@@ -5,6 +5,7 @@ import { issues } from "@/lib/db/schema";
 import { jsonResponse, errorResponse } from "@/lib/api-utils";
 import { inArray } from "drizzle-orm";
 import { batchUpdateSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -32,7 +33,7 @@ export async function PATCH(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error batch updating issues:", error);
+    logger.error(error, "Error batch updating issues");
     return errorResponse("Failed to batch update", 500);
   }
 }

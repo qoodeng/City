@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { attachments } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import fs from "fs/promises";
+import { logger } from "@/lib/logger";
 
 export const GET = async (
     req: NextRequest,
@@ -29,7 +30,7 @@ export const GET = async (
                 },
             });
         } catch (err) {
-            console.error("File read error:", err);
+            logger.error(err, "File read error");
             return new NextResponse("File not found on disk", { status: 404 });
         }
 
@@ -61,7 +62,7 @@ export const DELETE = async (
             await fs.unlink(attachment.filepath);
             // Optional: Remove directory if empty? Na, complexity.
         } catch (err) {
-            console.warn("Failed to delete file from disk:", err);
+            logger.warn(err, "Failed to delete file from disk");
         }
 
         return NextResponse.json({ success: true });

@@ -5,6 +5,7 @@ import { projects, issues } from "@/lib/db/schema";
 import { jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq, sql } from "drizzle-orm";
 import { updateProjectSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 export async function GET(
   _request: NextRequest,
@@ -70,7 +71,7 @@ export async function PATCH(
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error updating project:", error);
+    logger.error(error, "Error updating project");
     return errorResponse("Failed to update project", 500);
   }
 }

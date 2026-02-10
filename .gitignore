@@ -17,8 +17,10 @@
 /.next/
 /out/
 
-# production
-/build
+# production (keep build/entitlements for Electron signing)
+/build/*
+!/build/entitlements.mac.plist
+!/build/icon.png
 
 # misc
 .DS_Store
@@ -32,6 +34,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -44,7 +47,8 @@ next-env.d.ts
 *.db
 *.db-wal
 *.db-shm
-/drizzle/
+# drizzle studio temp files (migrations are committed)
+/drizzle/studio/
 
 # user uploads
 /uploads/

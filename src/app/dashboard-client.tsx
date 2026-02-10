@@ -42,7 +42,7 @@ function IssueRow({ issue, animationIndex = 0 }: { issue: IssueWithLabels; anima
       <StatusBadge status={issue.status as Status} size={12} />
       <PriorityIcon priority={issue.priority as Priority} size={12} />
       <span className="text-xs text-muted-foreground font-mono shrink-0">
-        CITY-{issue.number}
+        City-{issue.number}
       </span>
       <span className="flex-1 truncate">{issue.title}</span>
       {issue.labels.length > 0 && (

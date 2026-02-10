@@ -13,6 +13,7 @@ import { generateId, jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq, desc, asc, and, inArray, sql, SQL } from "drizzle-orm";
 import { createIssueSchema } from "@/lib/validation";
 import { escapeFts5Query, escapeLikePattern, parsePaginationInt } from "@/lib/sanitize";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -217,7 +218,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error creating issue:", error);
+    logger.error(error, "Error creating issue");
     return errorResponse("Failed to create issue", 500);
   }
 }

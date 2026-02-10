@@ -19,7 +19,7 @@ test.describe("Issue Lifecycle", () => {
     // Submit
     await createBtn.click();
     await expect(page.getByRole("dialog")).toBeHidden();
-    await expect(page.getByText(/Created CITY-/)).toBeVisible();
+    await expect(page.getByText(/Created City-/)).toBeVisible();
   });
 
   test("create issue with all properties", async ({ page, api }) => {
@@ -65,7 +65,7 @@ test.describe("Issue Lifecycle", () => {
     // Submit
     await page.getByRole("button", { name: "Create Issue" }).click();
     await expect(page.getByRole("dialog")).toBeHidden();
-    await expect(page.getByText(/Created CITY-/)).toBeVisible();
+    await expect(page.getByText(/Created City-/)).toBeVisible();
   });
 
   test("cancel creation with Escape", async ({ page }) => {
@@ -98,7 +98,7 @@ test.describe("Issue Lifecycle", () => {
     await page.getByRole("menuitem", { name: "Delete" }).click();
 
     // Verify toast
-    await expect(page.getByText(/Deleted CITY-/)).toBeVisible();
+    await expect(page.getByText(/Deleted City-/)).toBeVisible();
   });
 
   test("undo delete via toast action", async ({ page, api }) => {

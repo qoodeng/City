@@ -121,6 +121,6 @@ test.describe("Board View", () => {
     await expect(card.locator(".bg-city-yellow\\/20")).toBeVisible();
 
     // Card shows issue number
-    await expect(card.getByText(`CITY-${issue.number}`)).toBeVisible();
+    await expect(card.getByText(`City-${issue.number}`)).toBeVisible();
   });
 });

@@ -59,7 +59,7 @@ export const useIssueStore = create<IssueState>((set, get) => ({
           actionType: "create",
           entityType: "issue",
           entityId: issue.id,
-          description: `Created CITY-${issue.number}`,
+          description: `Created City-${issue.number}`,
           previousState: {},
         });
         sync.decrement();
@@ -119,7 +119,7 @@ export const useIssueStore = create<IssueState>((set, get) => ({
             actionType: "update",
             entityType: "issue",
             entityId: id,
-            description: `Updated CITY-${prevIssue.number}`,
+            description: `Updated City-${prevIssue.number}`,
             previousState: undoFields,
           });
         }
@@ -164,7 +164,7 @@ export const useIssueStore = create<IssueState>((set, get) => ({
           actionType: "delete",
           entityType: "issue",
           entityId: id,
-          description: `CITY-${issueToDelete.number}`,
+          description: `City-${issueToDelete.number}`,
           previousState: {
             ...issueToDelete,
             labels: issueToDelete.labels,

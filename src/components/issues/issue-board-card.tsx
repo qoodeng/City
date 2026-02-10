@@ -84,7 +84,7 @@ function BoardCardContent({
       <div className="flex items-center gap-1.5 mb-1.5">
         <PriorityIcon priority={issue.priority as Priority} size={12} />
         <span className="text-[11px] text-muted-foreground font-mono">
-          CITY-{issue.number}
+          City-{issue.number}
         </span>
         {childCount > 0 && (
           <span className="ml-auto text-[11px] text-muted-foreground bg-city-surface px-1.5 py-0.5 rounded">

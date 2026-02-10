@@ -4,6 +4,25 @@ import { attachments } from "@/lib/db/schema";
 import { nanoid } from "nanoid";
 import path from "path";
 import fs from "fs/promises";
+import { logger } from "@/lib/logger";
+
+const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
+
+const ALLOWED_MIME_TYPES = new Set([
+    // Images
+    "image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml", "image/bmp", "image/avif",
+    // Documents
+    "application/pdf",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "text/plain", "text/csv", "text/markdown",
+    // Archives
+    "application/zip", "application/gzip",
+    // Code / data
+    "application/json", "application/xml", "text/xml",
+]);
 
 export const POST = async (req: NextRequest) => {
     try {
@@ -14,6 +33,20 @@ export const POST = async (req: NextRequest) => {
         if (!file || !issueId) {
             return NextResponse.json(
                 { error: "File and issueId are required" },
+                { status: 400 }
+            );
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            return NextResponse.json(
+                { error: `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024} MB` },
+                { status: 400 }
+            );
+        }
+
+        if (!ALLOWED_MIME_TYPES.has(file.type)) {
+            return NextResponse.json(
+                { error: `File type "${file.type}" is not allowed` },
                 { status: 400 }
             );
         }
@@ -36,18 +69,18 @@ export const POST = async (req: NextRequest) => {
         let uploadDir = path.join(process.cwd(), "uploads");
 
         // In production (start with node server.js), we want meaningful persistence.
-        // Mac: ~/Library/Application Support/C.I.T.Y./attachments
-        // Win: %APPDATA%/C.I.T.Y./attachments
-        // Linux: ~/.config/C.I.T.Y./attachments
+        // Mac: ~/Library/Application Support/City/attachments
+        // Win: %APPDATA%/City/attachments
+        // Linux: ~/.config/City/attachments
 
         if (process.env.NODE_ENV === "production") {
             const home = process.env.HOME || process.env.USERPROFILE;
             if (process.platform === "darwin") {
-                uploadDir = path.join(home!, "Library", "Application Support", "C.I.T.Y.", "attachments");
+                uploadDir = path.join(home!, "Library", "Application Support", "City", "attachments");
             } else if (process.platform === "win32") {
-                uploadDir = path.join(process.env.APPDATA!, "C.I.T.Y.", "attachments");
+                uploadDir = path.join(process.env.APPDATA!, "City", "attachments");
             } else {
-                uploadDir = path.join(home!, ".config", "C.I.T.Y.", "attachments");
+                uploadDir = path.join(home!, ".config", "City", "attachments");
             }
         }
 
@@ -69,7 +102,7 @@ export const POST = async (req: NextRequest) => {
 
         return NextResponse.json(newAttachment[0]);
     } catch (error) {
-        console.error("Upload error:", error);
+        logger.error(error, "Upload error");
         return NextResponse.json(
             { error: "Failed to upload file" },
             { status: 500 }

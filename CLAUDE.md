@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What Is This?
 
-C.I.T.Y. (Christian's Issue Tracker Yellow) — a Linear-like issue tracker for solo use with a black and yellow crash test dummy theme. Runs as a Next.js web app and optionally as an Electron desktop app.
+City — a Linear-like issue tracker for solo use with a black and yellow crash test dummy theme. Runs as a Next.js web app and optionally as an Electron desktop app.
 
 ## Tech Stack
 
@@ -118,7 +118,7 @@ pnpm dist             # Build Electron distributable (scripts/build-electron.sh)
 ### Electron
 
 - Main process in `src/electron/main.ts`, preload in `src/electron/preload.ts`
-- `src/electron/backup-service.ts` — auto-backup to `~/Documents/C.I.T.Y-backups`
+- `src/electron/backup-service.ts` — auto-backup to `~/Documents/City-backups`
 - Build scripts in `scripts/` — `build-electron.sh`, `generate-icon.ts`, `patch-electron-plist.sh`
 - Compiled to `dist-electron/` via `tsconfig.electron.json`
 

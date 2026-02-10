@@ -46,7 +46,7 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  /* C.I.T.Y. custom colors */
+  /* City custom colors */
   --color-city-yellow: #FFD700;
   --color-city-yellow-dim: #B8A000;
   --color-city-yellow-bright: #FFE44D;
@@ -73,7 +73,7 @@
 
 :root {
   --radius: 0.5rem;
-  /* C.I.T.Y. crash test dummy theme — always dark */
+  /* City crash test dummy theme — always dark */
   --background: #000000;
   --foreground: #E5E5E5;
   --card: #1A1A1A;

@@ -104,7 +104,7 @@ function CommandPaletteOpen({ onOpenChange }: { onOpenChange: (open: boolean) =>
               {searchResults.map((result) => (
                 <CommandItem
                   key={result.id}
-                  value={`search-${result.id} CITY-${result.number} ${result.title}`}
+                  value={`search-${result.id} City-${result.number} ${result.title}`}
                   onSelect={() => {
                     close();
                     router.push(`/issues/${result.id}`);
@@ -120,7 +120,7 @@ function CommandPaletteOpen({ onOpenChange }: { onOpenChange: (open: boolean) =>
                       size={12}
                     />
                     <span className="text-[11px] text-muted-foreground font-mono shrink-0">
-                      CITY-{result.number}
+                      City-{result.number}
                     </span>
                     <span
                       className="truncate"
@@ -212,7 +212,7 @@ function CommandPaletteOpen({ onOpenChange }: { onOpenChange: (open: boolean) =>
               {issues.slice(0, 20).map((issue) => (
                 <CommandItem
                   key={issue.id}
-                  value={`CITY-${issue.number} ${issue.title}`}
+                  value={`City-${issue.number} ${issue.title}`}
                   onSelect={() => {
                     close();
                     router.push(`/issues/${issue.id}`);
@@ -228,7 +228,7 @@ function CommandPaletteOpen({ onOpenChange }: { onOpenChange: (open: boolean) =>
                       size={12}
                     />
                     <span className="text-[11px] text-muted-foreground font-mono shrink-0">
-                      CITY-{issue.number}
+                      City-{issue.number}
                     </span>
                     <span className="truncate">{issue.title}</span>
                   </div>

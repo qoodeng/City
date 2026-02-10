@@ -81,7 +81,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
                                     ease: [0.22, 1, 0.36, 1],
                                 }}
                             >
-                                C.I.T.Y.
+                                City
                             </motion.div>
                         </div>
                     </div>

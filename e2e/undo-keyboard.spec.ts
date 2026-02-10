@@ -33,7 +33,7 @@ test.describe("Undo via Cmd+Z", () => {
     // Delete via context menu
     await page.getByText("Undo Delete Kbd Issue").click({ button: "right" });
     await page.getByRole("menuitem", { name: "Delete" }).click();
-    await expect(page.getByText(/Deleted CITY-/)).toBeVisible();
+    await expect(page.getByText(/Deleted City-/)).toBeVisible();
 
     // Wait for deletion to register
     await page.waitForTimeout(500);

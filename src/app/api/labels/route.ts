@@ -5,6 +5,7 @@ import { labels } from "@/lib/db/schema";
 import { generateId, jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq } from "drizzle-orm";
 import { createLabelSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 export async function GET() {
   const result = await db.select().from(labels);
@@ -33,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error creating label:", error);
+    logger.error(error, "Error creating label");
     return errorResponse("Failed to create label", 500);
   }
 }

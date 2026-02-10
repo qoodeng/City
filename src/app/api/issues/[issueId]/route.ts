@@ -5,6 +5,7 @@ import { issues, issueLabels, labels, projects, comments, attachments } from "@/
 import { jsonResponse, errorResponse } from "@/lib/api-utils";
 import { eq, inArray, sql } from "drizzle-orm";
 import { updateIssueSchema } from "@/lib/validation";
+import { logger } from "@/lib/logger";
 
 async function getIssueWithRelations(id: string) {
   const issue = await db.select().from(issues).where(eq(issues.id, id)).get();
@@ -187,7 +188,7 @@ export async function PATCH(
     if (error instanceof z.ZodError) {
       return errorResponse(error.issues[0].message, 400);
     }
-    console.error("Error updating issue:", error);
+    logger.error(error, "Error updating issue");
     return errorResponse("Failed to update issue", 500);
   }
 }

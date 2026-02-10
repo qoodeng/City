@@ -49,7 +49,7 @@ export function ParentIssuePicker({
           {selected ? (
             <span className="flex items-center gap-1.5">
               <StatusBadge status={selected.status as Status} size={12} />
-              <span className="font-mono text-xs">CITY-{selected.number}</span>
+              <span className="font-mono text-xs">City-{selected.number}</span>
               <span className="truncate max-w-32">{selected.title}</span>
             </span>
           ) : (
@@ -78,7 +78,7 @@ export function ParentIssuePicker({
               {candidates.map((issue) => (
                 <CommandItem
                   key={issue.id}
-                  value={`CITY-${issue.number} ${issue.title}`}
+                  value={`City-${issue.number} ${issue.title}`}
                   onSelect={() => {
                     onChange(issue.id);
                     setOpen(false);
@@ -86,7 +86,7 @@ export function ParentIssuePicker({
                 >
                   <StatusBadge status={issue.status as Status} size={12} />
                   <span className="font-mono text-xs ml-1.5 shrink-0">
-                    CITY-{issue.number}
+                    City-{issue.number}
                   </span>
                   <span className="ml-1.5 truncate">{issue.title}</span>
                   {value === issue.id && (

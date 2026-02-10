@@ -42,7 +42,7 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "christianstephens",
+      "owner": "qoodeng",
       "repo": "C.I.T.Y."
     },
     "extraResources": [

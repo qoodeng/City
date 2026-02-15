@@ -53,6 +53,7 @@ export function IssueCreateDialog() {
   const [isMac, setIsMac] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsMac(navigator.platform.includes("Mac"));
   }, []);
 

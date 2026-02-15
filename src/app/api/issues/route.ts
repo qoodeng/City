@@ -154,16 +154,27 @@ export async function POST(request: NextRequest) {
 
     // Atomic counter increment
     db.transaction((tx) => {
-      tx.update(counters)
-        .set({ value: sql`${counters.value} + 1` })
-        .where(eq(counters.id, "issue_counter"))
-        .run();
-
-      const counter = tx
+      let counter = tx
         .select()
         .from(counters)
         .where(eq(counters.id, "issue_counter"))
         .get();
+
+      if (!counter) {
+        tx.insert(counters).values({ id: "issue_counter", value: 1 }).run();
+        counter = { id: "issue_counter", value: 1 };
+      } else {
+        tx.update(counters)
+          .set({ value: sql`${counters.value} + 1` })
+          .where(eq(counters.id, "issue_counter"))
+          .run();
+
+        counter = tx
+          .select()
+          .from(counters)
+          .where(eq(counters.id, "issue_counter"))
+          .get();
+      }
 
       const number = counter!.value;
 

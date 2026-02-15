@@ -15,7 +15,7 @@ vi.mock("@/lib/db", () => ({
 
 // Must import AFTER mocks
 const { GET, POST } = await import("../route");
-const { GET: GET_SINGLE, PATCH, DELETE } = await import("../[issueId]/route");
+const { GET: GET_SINGLE } = await import("../[issueId]/route");
 
 beforeAll(() => {
   testDb = createTestDb();
@@ -111,7 +111,7 @@ describe("POST /api/issues", () => {
       const { status, data } = await createIssue({ title: "Crash me" });
 
       expect(status).toBe(500);
-      expect((data as any).error).toBe("Failed to create issue");
+      expect((data as unknown as { error: string }).error).toBe("Failed to create issue");
     } finally {
       // Restore the spy
       transactionSpy.mockRestore();

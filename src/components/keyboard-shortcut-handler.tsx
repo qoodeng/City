@@ -328,7 +328,9 @@ export function KeyboardShortcutHandler() {
         if (e.key === "s" && !e.metaKey && !e.ctrlKey) {
           e.preventDefault();
           keyboard.clearBuffer();
-          setInlinePicker({ type: "status", issueId: focusedIssue.id });
+          if (focusedIssue) {
+            setInlinePicker({ type: "status", issueId: focusedIssue.id });
+          }
           return;
         }
 
@@ -336,7 +338,9 @@ export function KeyboardShortcutHandler() {
         if (e.key === "p" && !e.metaKey && !e.ctrlKey) {
           e.preventDefault();
           keyboard.clearBuffer();
-          setInlinePicker({ type: "priority", issueId: focusedIssue.id });
+          if (focusedIssue) {
+            setInlinePicker({ type: "priority", issueId: focusedIssue.id });
+          }
           return;
         }
 
@@ -344,7 +348,9 @@ export function KeyboardShortcutHandler() {
         if (e.key === "l" && !e.metaKey && !e.ctrlKey) {
           e.preventDefault();
           keyboard.clearBuffer();
-          setInlinePicker({ type: "label", issueId: focusedIssue.id });
+          if (focusedIssue) {
+            setInlinePicker({ type: "label", issueId: focusedIssue.id });
+          }
           return;
         }
 
@@ -352,7 +358,9 @@ export function KeyboardShortcutHandler() {
         if (e.key === "#") {
           e.preventDefault();
           keyboard.clearBuffer();
-          setInlinePicker({ type: "project", issueId: focusedIssue.id });
+          if (focusedIssue) {
+            setInlinePicker({ type: "project", issueId: focusedIssue.id });
+          }
           return;
         }
 

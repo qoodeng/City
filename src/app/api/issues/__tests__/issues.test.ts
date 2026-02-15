@@ -100,6 +100,23 @@ describe("POST /api/issues", () => {
     expect(status).toBe(400);
     expect((data as unknown as { error: string }).error).toBe("Title is required");
   });
+
+  it("returns 500 when database transaction fails", async () => {
+    // Spy on the transaction method and make it throw
+    const transactionSpy = vi.spyOn(testDb.db, "transaction").mockImplementation(() => {
+      throw new Error("DB Error");
+    });
+
+    try {
+      const { status, data } = await createIssue({ title: "Crash me" });
+
+      expect(status).toBe(500);
+      expect((data as any).error).toBe("Failed to create issue");
+    } finally {
+      // Restore the spy
+      transactionSpy.mockRestore();
+    }
+  });
 });
 
 describe("GET /api/issues", () => {

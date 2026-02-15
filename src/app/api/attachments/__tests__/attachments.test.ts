@@ -27,8 +27,8 @@ const mockUnlink = vi.fn();
 
 vi.mock("fs/promises", () => ({
   default: {
-    readFile: (...args: any[]) => mockReadFile(...args),
-    unlink: (...args: any[]) => mockUnlink(...args),
+    readFile: (...args: unknown[]) => mockReadFile(...args),
+    unlink: (...args: unknown[]) => mockUnlink(...args),
   },
 }));
 

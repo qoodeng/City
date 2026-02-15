@@ -37,6 +37,14 @@ export const POST = async (req: NextRequest) => {
             );
         }
 
+        // Validate issueId to prevent path traversal
+        if (!/^[a-zA-Z0-9_-]+$/.test(issueId)) {
+            return NextResponse.json(
+                { error: "Invalid issueId" },
+                { status: 400 }
+            );
+        }
+
         if (file.size > MAX_FILE_SIZE) {
             return NextResponse.json(
                 { error: `File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024} MB` },

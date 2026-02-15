@@ -79,10 +79,10 @@ export class BackupService {
             // Keep top MAX_BACKUPS, delete rest
             const toDelete = dbFiles.slice(this.MAX_BACKUPS);
 
-            for (const file of toDelete) {
+            await Promise.all(toDelete.map(async (file) => {
                 await fs.unlink(path.join(this.backupDir, file));
                 console.log(`[BackupService] Pruned old backup: ${file}`);
-            }
+            }));
 
         } catch (error) {
             console.error("[BackupService] Failed to prune backups:", error);

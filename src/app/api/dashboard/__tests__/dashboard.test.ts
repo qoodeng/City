@@ -28,10 +28,12 @@ beforeEach(() => {
   testDb.sqlite.prepare("UPDATE counters SET value = 0 WHERE id = 'issue_counter'").run();
 });
 
+let issueCounter = 1;
+
 function insertIssue(overrides: Record<string, unknown> = {}) {
   const defaults = {
     id: `issue-${Math.random().toString(36).slice(2)}`,
-    number: Math.floor(Math.random() * 10000),
+    number: issueCounter++,
     title: "Test issue",
     status: "backlog",
     priority: "none",

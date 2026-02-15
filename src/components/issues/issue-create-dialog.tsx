@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -50,6 +50,11 @@ export function IssueCreateDialog() {
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(navigator.platform.includes("Mac"));
+  }, []);
 
   // Reset form when dialog opens / clear parent when it closes (synchronous state adjustment)
   const [prevOpen, setPrevOpen] = useState(false);
@@ -246,8 +251,7 @@ export function IssueCreateDialog() {
 
           <div className="flex justify-between items-center pt-2">
             <span className="text-xs text-muted-foreground">
-              {navigator.platform?.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to
-              submit
+              {isMac ? "Cmd" : "Ctrl"}+Enter to submit
             </span>
             <Button
               onClick={handleSubmit}

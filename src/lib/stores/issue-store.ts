@@ -18,7 +18,12 @@ interface IssueState {
     id: string,
     data: Record<string, unknown>
   ) => Promise<boolean>;
+  batchUpdateIssues: (
+    ids: string[],
+    data: Record<string, unknown>
+  ) => Promise<boolean>;
   deleteIssue: (id: string) => Promise<boolean>;
+  batchDeleteIssues: (ids: string[]) => Promise<boolean>;
   setIssues: (issues: IssueWithLabels[]) => void;
   navigationIds: string[];
   setNavigationIds: (ids: string[]) => void;
@@ -139,6 +144,68 @@ export const useIssueStore = create<IssueState>((set, get) => ({
     }
   },
 
+  batchUpdateIssues: async (ids, data) => {
+    const prev = get().issues;
+    const targets = prev.filter((i) => ids.includes(i.id));
+    if (targets.length === 0) return false;
+
+    // Prepare undo items
+    const batchItems = targets.map((issue) => {
+      const previousState: Record<string, unknown> = {};
+      for (const key of Object.keys(data)) {
+        previousState[key] = (issue as Record<string, unknown>)[key];
+      }
+      return { entityId: issue.id, previousState };
+    });
+
+    // Optimistic update
+    set((state) => ({
+      issues: state.issues.map((issue) =>
+        ids.includes(issue.id) ? { ...issue, ...data } : issue
+      ),
+    }));
+
+    const sync = useSyncStore.getState();
+    sync.increment();
+
+    try {
+      const res = await fetch("/api/issues/batch", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ issueIds: ids, updates: data }),
+      });
+
+      if (res.ok) {
+        // We don't get back the full updated objects, so we trust our optimistic update
+        // but ideally we should refetch or trust the response if it returned data.
+        // For now, keep optimistic state.
+
+        useUndoStore.getState().pushUndo({
+          actionType: "update",
+          entityType: "issue",
+          entityId: "batch", // Placeholder
+          description: `Updated ${ids.length} issues`,
+          previousState: {}, // Unused for batch
+          batchItems,
+        });
+
+        sync.decrement();
+        return true;
+      }
+
+      // Revert
+      set({ issues: prev });
+      sync.decrement();
+      toast.error("Failed to batch update issues");
+      return false;
+    } catch {
+      set({ issues: prev });
+      sync.decrement();
+      toast.error("Failed to batch update issues");
+      return false;
+    }
+  },
+
   deleteIssue: async (id) => {
     const prev = get().issues;
     const issueToDelete = prev.find((i) => i.id === id);
@@ -177,6 +244,58 @@ export const useIssueStore = create<IssueState>((set, get) => ({
       set({ issues: prev });
       sync.decrement();
       toast.error("Failed to delete issue");
+      return false;
+    }
+  },
+
+  batchDeleteIssues: async (ids) => {
+    const prev = get().issues;
+    const targets = prev.filter((i) => ids.includes(i.id));
+    if (targets.length === 0) return false;
+
+    // Prepare undo items
+    const batchItems = targets.map((issue) => ({
+      entityId: issue.id,
+      previousState: { ...issue, labels: issue.labels },
+    }));
+
+    // Optimistic delete
+    set((state) => ({
+      issues: state.issues.filter((issue) => !ids.includes(issue.id)),
+    }));
+
+    const sync = useSyncStore.getState();
+    sync.increment();
+
+    try {
+      const res = await fetch("/api/issues/batch", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ issueIds: ids }),
+      });
+
+      if (res.ok) {
+        useUndoStore.getState().pushUndo({
+          actionType: "delete",
+          entityType: "issue",
+          entityId: "batch",
+          description: `${ids.length} issues`,
+          previousState: {},
+          batchItems,
+        });
+
+        sync.decrement();
+        return true;
+      }
+
+      set({ issues: prev });
+      sync.decrement();
+      toast.error("Failed to batch delete issues");
+      return false;
+    } catch {
+      set({ issues: prev });
+      sync.decrement();
+      toast.error("Failed to batch delete issues");
       return false;
     }
   },

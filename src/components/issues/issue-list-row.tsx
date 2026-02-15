@@ -32,13 +32,47 @@ import { Calendar, MessageSquare, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export function IssueListRow({ issue, depth = 0, animationIndex = 0 }: { issue: IssueWithLabels; depth?: number; animationIndex?: number }) {
-  const { focusedIssueId } = useUIStore();
-  const { updateIssue, deleteIssue } = useIssueStore();
-  const isFocused = focusedIssueId === issue.id;
+  const isFocused = useUIStore((s) => s.focusedIssueId === issue.id);
+  const isSelected = useUIStore((s) => s.selectedIssueIds.has(issue.id));
+  const toggleIssueSelection = useUIStore((s) => s.toggleIssueSelection);
+  const selectAllIssues = useUIStore((s) => s.selectAllIssues);
+  const updateIssue = useIssueStore((s) => s.updateIssue);
+  const deleteIssue = useIssueStore((s) => s.deleteIssue);
+
   const isOverdue =
     issue.dueDate &&
     new Date(issue.dueDate) < new Date() &&
     issue.status !== "done";
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (e.metaKey || e.ctrlKey) {
+      e.preventDefault();
+      toggleIssueSelection(issue.id);
+    } else if (e.shiftKey) {
+      e.preventDefault();
+      const { focusedIssueId, selectedIssueIds } = useUIStore.getState();
+      const { navigationIds } = useIssueStore.getState();
+      const anchorId = focusedIssueId; // Use focused issue as anchor
+
+      if (anchorId) {
+        const startIndex = navigationIds.indexOf(anchorId);
+        const endIndex = navigationIds.indexOf(issue.id);
+
+        if (startIndex !== -1 && endIndex !== -1) {
+          const start = Math.min(startIndex, endIndex);
+          const end = Math.max(startIndex, endIndex);
+          const range = navigationIds.slice(start, end + 1);
+
+          // Union with existing selection
+          const newSelection = new Set(selectedIssueIds);
+          range.forEach(id => newSelection.add(id));
+          selectAllIssues(Array.from(newSelection));
+        }
+      } else {
+        toggleIssueSelection(issue.id);
+      }
+    }
+  };
 
   const handleStatusChange = (status: string) => {
     updateIssue(issue.id, { status });
@@ -65,9 +99,11 @@ export function IssueListRow({ issue, depth = 0, animationIndex = 0 }: { issue: 
       <ContextMenuTrigger asChild>
         <Link
           href={`/issues/${issue.id}`}
+          onClick={handleClick}
           className={cn(
-            "flex items-center gap-3 h-10 px-4 text-sm border-b border-border/50 transition-colors hover:bg-city-surface-hover group animate-stagger-in",
-            isFocused && "bg-city-yellow/10 ring-1 ring-inset ring-city-yellow/50 border-l-2 !border-l-city-yellow",
+            "flex items-center gap-3 h-10 px-4 text-sm border-b border-border/50 transition-colors hover:bg-city-surface-hover group animate-stagger-in select-none",
+            isFocused && "ring-1 ring-inset ring-city-yellow/50 border-l-2 !border-l-city-yellow",
+            isSelected ? "bg-city-yellow/20" : isFocused ? "bg-city-yellow/5" : "",
             depth > 0 && "relative"
           )}
           style={{

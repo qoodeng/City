@@ -1,0 +1,78 @@
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
+import { createTestDb, cleanupTestDb } from "@/test/db";
+import { createRequest, parseResponse } from "@/test/api-helpers";
+import type { IssueWithLabels } from "@/types";
+
+let testDb: ReturnType<typeof createTestDb>;
+
+vi.mock("@/lib/db", () => ({
+  get db() {
+    return testDb.db;
+  },
+  getSqlite: () => testDb.sqlite,
+}));
+
+const { DELETE } = await import("../batch/route");
+const { POST } = await import("../route");
+
+beforeAll(() => {
+  testDb = createTestDb();
+});
+
+afterAll(() => {
+  cleanupTestDb(testDb);
+});
+
+beforeEach(() => {
+  testDb.sqlite.prepare("DELETE FROM issue_labels").run();
+  testDb.sqlite.prepare("DELETE FROM issues").run();
+  testDb.sqlite.prepare("UPDATE counters SET value = 0 WHERE id = 'issue_counter'").run();
+});
+
+async function createIssue(body: Record<string, unknown>) {
+  const req = createRequest("POST", "/api/issues", body);
+  const res = await POST(req);
+  return (await parseResponse<IssueWithLabels>(res)).data;
+}
+
+describe("DELETE /api/issues/batch", () => {
+  it("batch delete multiple issues", async () => {
+    const i1 = await createIssue({ title: "Issue 1" });
+    const i2 = await createIssue({ title: "Issue 2" });
+    const i3 = await createIssue({ title: "Issue 3" });
+
+    const req = createRequest("DELETE", "/api/issues/batch", {
+      issueIds: [i1.id, i2.id],
+    });
+    const res = await DELETE(req);
+    const { data, status } = await parseResponse(res);
+    expect(status).toBe(200);
+    expect((data as { success: boolean }).success).toBe(true);
+
+    // Verify in DB
+    const rows = testDb.sqlite.prepare("SELECT id FROM issues").all() as { id: string }[];
+    expect(rows.length).toBe(1);
+    expect(rows[0].id).toBe(i3.id);
+  });
+
+  it("handles mix of valid and invalid IDs gracefully", async () => {
+    const i1 = await createIssue({ title: "Issue 1" });
+
+    const req = createRequest("DELETE", "/api/issues/batch", {
+      issueIds: [i1.id, "nonexistent-id"],
+    });
+    const res = await DELETE(req);
+    expect(res.status).toBe(200);
+
+    const rows = testDb.sqlite.prepare("SELECT id FROM issues").all();
+    expect(rows.length).toBe(0);
+  });
+
+  it("empty IDs array → 400", async () => {
+    const req = createRequest("DELETE", "/api/issues/batch", {
+      issueIds: [],
+    });
+    const res = await DELETE(req);
+    expect(res.status).toBe(400);
+  });
+});

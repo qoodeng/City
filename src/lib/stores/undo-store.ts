@@ -9,6 +9,10 @@ export interface UndoEntry {
   entityId: string;
   description: string;
   previousState: Record<string, unknown>;
+  batchItems?: {
+    entityId: string;
+    previousState: Record<string, unknown>;
+  }[];
   timestamp: number;
 }
 

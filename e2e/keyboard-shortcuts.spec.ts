@@ -37,7 +37,8 @@ test.describe("Keyboard Shortcuts", () => {
     await api.createIssue({ title: "Nav Issue A", status: "backlog" });
     await api.createIssue({ title: "Nav Issue B", status: "backlog" });
 
-    await page.goto("/issues");
+    // Filter to isolate the test issues
+    await page.goto(`/issues?search=Nav%20Issue`);
     await expect(page.getByText("Nav Issue A")).toBeVisible();
 
     // Press J to focus first issue
@@ -57,7 +58,8 @@ test.describe("Keyboard Shortcuts", () => {
   test("Enter opens focused issue", async ({ page, api }) => {
     const issue = await api.createIssue({ title: "Enter Open Issue" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue
+    await page.goto(`/issues?search=${encodeURIComponent(issue.title)}`);
     await expect(page.getByText("Enter Open Issue")).toBeVisible();
 
     // Focus the issue
@@ -113,7 +115,8 @@ test.describe("Keyboard Shortcuts", () => {
   test("status shortcuts on focused issue", async ({ page, api }) => {
     const issue = await api.createIssue({ title: "Status Shortcut Issue", status: "backlog" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue
+    await page.goto(`/issues?search=${encodeURIComponent(issue.title)}`);
     await expect(page.getByText("Status Shortcut Issue")).toBeVisible();
 
     // Focus the issue

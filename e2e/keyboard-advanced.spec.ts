@@ -4,20 +4,14 @@ test.describe("Advanced Keyboard Shortcuts", () => {
   test("status shortcuts: t (todo), i (in_progress), d (done)", async ({ page, api }) => {
     const issue = await api.createIssue({ title: "Kbd Status Issue", status: "backlog" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue
+    await page.goto(`/issues?search=${encodeURIComponent(issue.title)}`);
     await expect(page.getByText("Kbd Status Issue")).toBeVisible();
 
-    // Focus the issue — navigate until we find ours
-    let focused = false;
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("j");
-      const row = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
-      if (await row.isVisible({ timeout: 300 }).catch(() => false)) {
-        focused = true;
-        break;
-      }
-    }
-    expect(focused).toBe(true);
+    // Press j to focus
+    await page.keyboard.press("j");
+    const row = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
+    await expect(row).toBeVisible();
 
     // t = mark todo
     await page.keyboard.press("t");
@@ -40,20 +34,14 @@ test.describe("Advanced Keyboard Shortcuts", () => {
   test("x marks focused issue as cancelled", async ({ page, api }) => {
     const issue = await api.createIssue({ title: "Kbd Cancel Issue", status: "backlog" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue
+    await page.goto(`/issues?search=${encodeURIComponent(issue.title)}`);
     await expect(page.getByText("Kbd Cancel Issue")).toBeVisible();
 
-    // Focus our issue
-    let focused = false;
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("j");
-      const row = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
-      if (await row.isVisible({ timeout: 300 }).catch(() => false)) {
-        focused = true;
-        break;
-      }
-    }
-    expect(focused).toBe(true);
+    // Press j to focus
+    await page.keyboard.press("j");
+    const row = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
+    await expect(row).toBeVisible();
 
     await page.keyboard.press("x");
     await page.waitForTimeout(500);
@@ -110,20 +98,14 @@ test.describe("Advanced Keyboard Shortcuts", () => {
   test("Backspace deletes focused issue", async ({ page, api }) => {
     const issue = await api.createIssue({ title: "Backspace Delete Issue" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue
+    await page.goto(`/issues?search=${encodeURIComponent(issue.title)}`);
     await expect(page.getByText("Backspace Delete Issue")).toBeVisible();
 
-    // Focus our issue
-    let focused = false;
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("j");
-      const row = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
-      if (await row.isVisible({ timeout: 300 }).catch(() => false)) {
-        focused = true;
-        break;
-      }
-    }
-    expect(focused).toBe(true);
+    // Press j to focus
+    await page.keyboard.press("j");
+    const row = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
+    await expect(row).toBeVisible();
 
     // Press Backspace to delete
     await page.keyboard.press("Backspace");
@@ -141,36 +123,24 @@ test.describe("Advanced Keyboard Shortcuts", () => {
     const issue1 = await api.createIssue({ title: "Repeat Issue 1", status: "backlog" });
     const issue2 = await api.createIssue({ title: "Repeat Issue 2", status: "backlog" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue1
+    await page.goto(`/issues?search=${encodeURIComponent(issue1.title)}`);
     await expect(page.getByText("Repeat Issue 1")).toBeVisible();
-    await expect(page.getByText("Repeat Issue 2")).toBeVisible();
 
     // Focus first issue and mark done
-    let focused1 = false;
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("j");
-      const row = page.locator(`[data-issue-id="${issue1.id}"].bg-city-yellow\\/10`);
-      if (await row.isVisible({ timeout: 300 }).catch(() => false)) {
-        focused1 = true;
-        break;
-      }
-    }
-    expect(focused1).toBe(true);
+    await page.keyboard.press("j");
+    await page.locator(`[data-issue-id="${issue1.id}"].bg-city-yellow\\/10`).waitFor({ state: 'visible' });
 
     await page.keyboard.press("d"); // mark done
     await page.waitForTimeout(500);
 
-    // Navigate to second issue
-    let focused2 = false;
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("j");
-      const row = page.locator(`[data-issue-id="${issue2.id}"].bg-city-yellow\\/10`);
-      if (await row.isVisible({ timeout: 300 }).catch(() => false)) {
-        focused2 = true;
-        break;
-      }
-    }
-    expect(focused2).toBe(true);
+    // Filter to isolate issue2
+    await page.goto(`/issues?search=${encodeURIComponent(issue2.title)}`);
+    await expect(page.getByText("Repeat Issue 2")).toBeVisible();
+
+    // Focus second issue
+    await page.keyboard.press("j");
+    await page.locator(`[data-issue-id="${issue2.id}"].bg-city-yellow\\/10`).waitFor({ state: 'visible' });
 
     await page.keyboard.press("."); // repeat last action (mark done)
     await page.waitForTimeout(500);

@@ -7,6 +7,7 @@ import { useIssueStore } from "@/lib/stores/issue-store";
 import { useKeyboardStore } from "@/lib/stores/keyboard-store";
 import { executeUndo } from "@/lib/undo-executor";
 import { toast } from "sonner";
+import type { Issue } from "@/lib/db/schema";
 
 function isInputElement(target: EventTarget | null): boolean {
   if (!target || !(target instanceof HTMLElement)) return false;
@@ -222,103 +223,54 @@ export function KeyboardShortcutHandler() {
       const focusedIssue = focusedIssueId ? issues.find((i) => i.id === focusedIssueId) : null;
 
       if (selectedIssueIds.size > 0 || focusedIssue) {
-        // d — mark done
-        if (e.key === "d" && !e.metaKey && !e.ctrlKey) {
+        const handleStatusChange = (
+          status: Issue["status"],
+          description: string
+        ) => {
           e.preventDefault();
           keyboard.clearBuffer();
           if (selectedIssueIds.size > 0) {
-            batchUpdateIssues(Array.from(selectedIssueIds), { status: "done" });
+            batchUpdateIssues(Array.from(selectedIssueIds), { status });
           } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "done" });
+            updateIssue(focusedIssue.id, { status });
             keyboard.setLastAction(
               () => {
                 const current = useUIStore.getState().focusedIssueId;
                 if (current)
-                  useIssueStore.getState().updateIssue(current, { status: "done" });
+                  useIssueStore.getState().updateIssue(current, { status });
               },
-              "Mark done"
+              description
             );
           }
+        };
+
+        // d — mark done
+        if (e.key === "d" && !e.metaKey && !e.ctrlKey) {
+          handleStatusChange("done", "Mark done");
           return;
         }
 
         // x — mark cancelled
         if (e.key === "x" && !e.metaKey && !e.ctrlKey) {
-          e.preventDefault();
-          keyboard.clearBuffer();
-          if (selectedIssueIds.size > 0) {
-            batchUpdateIssues(Array.from(selectedIssueIds), { status: "cancelled" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "cancelled" });
-            keyboard.setLastAction(
-              () => {
-                const current = useUIStore.getState().focusedIssueId;
-                if (current)
-                  useIssueStore.getState().updateIssue(current, { status: "cancelled" });
-              },
-              "Mark cancelled"
-            );
-          }
+          handleStatusChange("cancelled", "Mark cancelled");
           return;
         }
 
         // b — mark backlog
         if (e.key === "b" && !e.metaKey && !e.ctrlKey) {
-          e.preventDefault();
-          keyboard.clearBuffer();
-          if (selectedIssueIds.size > 0) {
-            batchUpdateIssues(Array.from(selectedIssueIds), { status: "backlog" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "backlog" });
-            keyboard.setLastAction(
-              () => {
-                const current = useUIStore.getState().focusedIssueId;
-                if (current)
-                  useIssueStore.getState().updateIssue(current, { status: "backlog" });
-              },
-              "Mark backlog"
-            );
-          }
+          handleStatusChange("backlog", "Mark backlog");
           return;
         }
 
         // t — mark todo
         if (e.key === "t" && !e.metaKey && !e.ctrlKey) {
-          e.preventDefault();
-          keyboard.clearBuffer();
-          if (selectedIssueIds.size > 0) {
-            batchUpdateIssues(Array.from(selectedIssueIds), { status: "todo" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "todo" });
-            keyboard.setLastAction(
-              () => {
-                const current = useUIStore.getState().focusedIssueId;
-                if (current)
-                  useIssueStore.getState().updateIssue(current, { status: "todo" });
-              },
-              "Mark todo"
-            );
-          }
+          handleStatusChange("todo", "Mark todo");
           return;
         }
 
         // i — mark in_progress
         if (e.key === "i" && !e.metaKey && !e.ctrlKey) {
-          e.preventDefault();
-          keyboard.clearBuffer();
-          if (selectedIssueIds.size > 0) {
-            batchUpdateIssues(Array.from(selectedIssueIds), { status: "in_progress" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "in_progress" });
-            keyboard.setLastAction(
-              () => {
-                const current = useUIStore.getState().focusedIssueId;
-                if (current)
-                  useIssueStore.getState().updateIssue(current, { status: "in_progress" });
-              },
-              "Mark in progress"
-            );
-          }
+          handleStatusChange("in_progress", "Mark in progress");
           return;
         }
 

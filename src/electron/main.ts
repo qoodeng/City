@@ -75,9 +75,45 @@ const createWindow = () => {
 
     mainWindow.loadURL(startUrl);
 
-    // Permission request handler
-    mainWindow.webContents.session.setPermissionRequestHandler((_webContents, _permission, callback) => {
-        return callback(true);
+    // Permission request handler - restrict to own origin and allow only needed permissions
+    mainWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
+        const url = webContents.getURL();
+
+        // Only allow permissions for our own origin (localhost)
+        const isTrustedOrigin = url.startsWith(`http://localhost:${PORT}`) ||
+            url.startsWith(`http://127.0.0.1:${PORT}`);
+
+        if (!isTrustedOrigin) {
+            console.warn(`Denied permission request for ${permission} from untrusted origin: ${url}`);
+            return callback(false);
+        }
+
+        // List of permissions that are allowed for the trusted origin.
+        // For this app, it seems no special permissions are required.
+        // If notifications or other permissions are needed, add them here.
+        const allowedPermissions: string[] = [];
+
+        if (allowedPermissions.includes(permission)) {
+            return callback(true);
+        }
+
+        console.warn(`Denied permission request for ${permission} from ${url}`);
+        return callback(false);
+    });
+
+    // Permission check handler - further restrict permission checks
+    mainWindow.webContents.session.setPermissionCheckHandler((_webContents, permission, origin) => {
+        // Only allow permissions for our own origin (localhost)
+        const isTrustedOrigin = origin.startsWith(`http://localhost:${PORT}`) ||
+            origin.startsWith(`http://127.0.0.1:${PORT}`);
+
+        if (!isTrustedOrigin) {
+            return false;
+        }
+
+        // List of permissions that are allowed for the trusted origin
+        const allowedPermissions: string[] = [];
+        return allowedPermissions.includes(permission);
     });
 
     // Hide window buttons on startup (macOS)

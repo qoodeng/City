@@ -53,7 +53,10 @@ export function IssueCreateDialog() {
   const [isMac, setIsMac] = useState(false);
 
   useEffect(() => {
-    setIsMac(typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.platform));
+    if (typeof navigator !== "undefined") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIsMac(/Mac|iPod|iPhone|iPad/.test(navigator.platform));
+    }
   }, []);
 
   // Reset form when dialog opens / clear parent when it closes (synchronous state adjustment)

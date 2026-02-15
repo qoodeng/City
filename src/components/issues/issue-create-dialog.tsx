@@ -246,8 +246,11 @@ export function IssueCreateDialog() {
 
           <div className="flex justify-between items-center pt-2">
             <span className="text-xs text-muted-foreground">
-              {navigator.platform?.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to
-              submit
+              {(typeof navigator !== "undefined" &&
+              navigator.platform?.includes("Mac"))
+                ? "Cmd"
+                : "Ctrl"}
+              +Enter to submit
             </span>
             <Button
               onClick={handleSubmit}

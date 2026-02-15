@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, Mock } from "vitest";
 import { GET } from "./route";
 import * as db from "@/lib/db";
 
@@ -14,7 +14,7 @@ describe("GET /api/health", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (db.getSqlite as any).mockReturnValue(mockSqlite);
+    (db.getSqlite as Mock).mockReturnValue(mockSqlite);
   });
 
   it("returns 200 OK when database is healthy", async () => {
@@ -44,7 +44,7 @@ describe("GET /api/health", () => {
   });
 
   it("returns 503 Service Unavailable when database is unreachable", async () => {
-    (db.getSqlite as any).mockImplementation(() => {
+    (db.getSqlite as Mock).mockImplementation(() => {
       throw new Error("Connection failed");
     });
 

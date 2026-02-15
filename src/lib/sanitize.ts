@@ -1,5 +1,36 @@
 import DOMPurify from "dompurify";
 
+// Add a hook to ensure target="_blank" links have rel="noopener noreferrer"
+// to prevent reverse tabnabbing attacks.
+DOMPurify.addHook("afterSanitizeAttributes", (node) => {
+  if (node.tagName === "A") {
+    const target = node.getAttribute("target");
+    if (target) {
+      const t = target.toLowerCase();
+      // Apply to all targets that open a new browsing context (or might),
+      // excluding those that strictly stay in the same/parent/top frame.
+      if (t !== "_self" && t !== "_parent" && t !== "_top") {
+        const rel = node.getAttribute("rel") || "";
+        const parts = rel.split(/\s+/).filter(Boolean);
+
+        let changed = false;
+        if (!parts.includes("noopener")) {
+          parts.push("noopener");
+          changed = true;
+        }
+        if (!parts.includes("noreferrer")) {
+          parts.push("noreferrer");
+          changed = true;
+        }
+
+        if (changed) {
+          node.setAttribute("rel", parts.join(" "));
+        }
+      }
+    }
+  }
+});
+
 /**
  * Sanitize HTML for safe rendering via dangerouslySetInnerHTML.
  * Allows basic formatting tags from TipTap but strips scripts, event handlers, etc.

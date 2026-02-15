@@ -2,7 +2,7 @@ import { test, expect } from "./fixtures";
 
 test.describe("Context Menu Actions", () => {
   test("change status via context menu", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Ctx Status Issue", status: "backlog" });
+    const _issue = await api.createIssue({ title: "Ctx Status Issue", status: "backlog" });
 
     await page.goto("/issues");
     await expect(page.getByText("Ctx Status Issue")).toBeVisible();

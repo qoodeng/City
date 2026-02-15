@@ -66,7 +66,7 @@ describe("Projects CRUD", () => {
     await createIssue({ title: "Issue 1", projectId: proj.id });
     await createIssue({ title: "Issue 2", projectId: proj.id, status: "done" });
 
-    const req = createRequest("GET", "/api/projects");
+    const _req = createRequest("GET", "/api/projects");
     const { data } = await parseResponse<ProjectWithCounts[]>(await GET_LIST());
     expect(data).toHaveLength(1);
     expect(data[0].issueCount).toBe(2);

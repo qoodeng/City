@@ -325,7 +325,7 @@ export function KeyboardShortcutHandler() {
         // === PICKER SHORTCUTS ===
 
         // s — open inline status picker
-        if (e.key === "s" && !e.metaKey && !e.ctrlKey) {
+        if (e.key === "s" && !e.metaKey && !e.ctrlKey && focusedIssue) {
           e.preventDefault();
           keyboard.clearBuffer();
           setInlinePicker({ type: "status", issueId: focusedIssue.id });
@@ -333,7 +333,7 @@ export function KeyboardShortcutHandler() {
         }
 
         // p — open inline priority picker
-        if (e.key === "p" && !e.metaKey && !e.ctrlKey) {
+        if (e.key === "p" && !e.metaKey && !e.ctrlKey && focusedIssue) {
           e.preventDefault();
           keyboard.clearBuffer();
           setInlinePicker({ type: "priority", issueId: focusedIssue.id });
@@ -341,7 +341,7 @@ export function KeyboardShortcutHandler() {
         }
 
         // l — open inline label picker
-        if (e.key === "l" && !e.metaKey && !e.ctrlKey) {
+        if (e.key === "l" && !e.metaKey && !e.ctrlKey && focusedIssue) {
           e.preventDefault();
           keyboard.clearBuffer();
           setInlinePicker({ type: "label", issueId: focusedIssue.id });
@@ -349,7 +349,7 @@ export function KeyboardShortcutHandler() {
         }
 
         // # — open inline project picker
-        if (e.key === "#") {
+        if (e.key === "#" && focusedIssue) {
           e.preventDefault();
           keyboard.clearBuffer();
           setInlinePicker({ type: "project", issueId: focusedIssue.id });

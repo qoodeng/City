@@ -24,14 +24,16 @@ async function seed() {
   console.log("  - Counter created");
 
   // Insert default labels
-  for (const label of DEFAULT_LABELS) {
+  if (DEFAULT_LABELS.length > 0) {
     db.insert(labels)
-      .values({
-        id: nanoid(),
-        name: label.name,
-        color: label.color,
-        description: label.description,
-      })
+      .values(
+        DEFAULT_LABELS.map((label) => ({
+          id: nanoid(),
+          name: label.name,
+          color: label.color,
+          description: label.description,
+        }))
+      )
       .onConflictDoNothing()
       .run();
   }

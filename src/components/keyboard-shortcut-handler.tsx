@@ -189,8 +189,13 @@ export function KeyboardShortcutHandler() {
 
         if (activeIds.length === 0) return;
 
-        const currentIndex = focusedIssueId
-          ? activeIds.indexOf(focusedIssueId)
+        // Ensure focusedIssueId is valid within current context
+        const currentId = focusedIssueId && activeIds.includes(focusedIssueId)
+          ? focusedIssueId
+          : null;
+
+        const currentIndex = currentId
+          ? activeIds.indexOf(currentId)
           : -1;
 
         let nextIndex: number;
@@ -219,17 +224,16 @@ export function KeyboardShortcutHandler() {
       }
 
       // === STATUS SHORTCUTS (when issue is focused) ===
-      const focusedIssue = focusedIssueId ? issues.find((i) => i.id === focusedIssueId) : null;
-
-      if (selectedIssueIds.size > 0 || focusedIssue) {
+      // Use focusedIssueId directly for robustness, even if issue object is missing from local store momentarily
+      if (selectedIssueIds.size > 0 || focusedIssueId) {
         // d — mark done
         if (e.key === "d" && !e.metaKey && !e.ctrlKey) {
           e.preventDefault();
           keyboard.clearBuffer();
           if (selectedIssueIds.size > 0) {
             batchUpdateIssues(Array.from(selectedIssueIds), { status: "done" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "done" });
+          } else if (focusedIssueId) {
+            updateIssue(focusedIssueId, { status: "done" });
             keyboard.setLastAction(
               () => {
                 const current = useUIStore.getState().focusedIssueId;
@@ -248,8 +252,8 @@ export function KeyboardShortcutHandler() {
           keyboard.clearBuffer();
           if (selectedIssueIds.size > 0) {
             batchUpdateIssues(Array.from(selectedIssueIds), { status: "cancelled" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "cancelled" });
+          } else if (focusedIssueId) {
+            updateIssue(focusedIssueId, { status: "cancelled" });
             keyboard.setLastAction(
               () => {
                 const current = useUIStore.getState().focusedIssueId;
@@ -268,8 +272,8 @@ export function KeyboardShortcutHandler() {
           keyboard.clearBuffer();
           if (selectedIssueIds.size > 0) {
             batchUpdateIssues(Array.from(selectedIssueIds), { status: "backlog" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "backlog" });
+          } else if (focusedIssueId) {
+            updateIssue(focusedIssueId, { status: "backlog" });
             keyboard.setLastAction(
               () => {
                 const current = useUIStore.getState().focusedIssueId;
@@ -288,8 +292,8 @@ export function KeyboardShortcutHandler() {
           keyboard.clearBuffer();
           if (selectedIssueIds.size > 0) {
             batchUpdateIssues(Array.from(selectedIssueIds), { status: "todo" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "todo" });
+          } else if (focusedIssueId) {
+            updateIssue(focusedIssueId, { status: "todo" });
             keyboard.setLastAction(
               () => {
                 const current = useUIStore.getState().focusedIssueId;
@@ -308,8 +312,8 @@ export function KeyboardShortcutHandler() {
           keyboard.clearBuffer();
           if (selectedIssueIds.size > 0) {
             batchUpdateIssues(Array.from(selectedIssueIds), { status: "in_progress" });
-          } else if (focusedIssue) {
-            updateIssue(focusedIssue.id, { status: "in_progress" });
+          } else if (focusedIssueId) {
+            updateIssue(focusedIssueId, { status: "in_progress" });
             keyboard.setLastAction(
               () => {
                 const current = useUIStore.getState().focusedIssueId;
@@ -325,34 +329,34 @@ export function KeyboardShortcutHandler() {
         // === PICKER SHORTCUTS ===
 
         // s — open inline status picker
-        if (e.key === "s" && !e.metaKey && !e.ctrlKey && focusedIssue) {
+        if (e.key === "s" && !e.metaKey && !e.ctrlKey && focusedIssueId) {
           e.preventDefault();
           keyboard.clearBuffer();
-          setInlinePicker({ type: "status", issueId: focusedIssue.id });
+          setInlinePicker({ type: "status", issueId: focusedIssueId });
           return;
         }
 
         // p — open inline priority picker
-        if (e.key === "p" && !e.metaKey && !e.ctrlKey && focusedIssue) {
+        if (e.key === "p" && !e.metaKey && !e.ctrlKey && focusedIssueId) {
           e.preventDefault();
           keyboard.clearBuffer();
-          setInlinePicker({ type: "priority", issueId: focusedIssue.id });
+          setInlinePicker({ type: "priority", issueId: focusedIssueId });
           return;
         }
 
         // l — open inline label picker
-        if (e.key === "l" && !e.metaKey && !e.ctrlKey && focusedIssue) {
+        if (e.key === "l" && !e.metaKey && !e.ctrlKey && focusedIssueId) {
           e.preventDefault();
           keyboard.clearBuffer();
-          setInlinePicker({ type: "label", issueId: focusedIssue.id });
+          setInlinePicker({ type: "label", issueId: focusedIssueId });
           return;
         }
 
         // # — open inline project picker
-        if (e.key === "#" && focusedIssue) {
+        if (e.key === "#" && focusedIssueId) {
           e.preventDefault();
           keyboard.clearBuffer();
-          setInlinePicker({ type: "project", issueId: focusedIssue.id });
+          setInlinePicker({ type: "project", issueId: focusedIssueId });
           return;
         }
 
@@ -379,10 +383,11 @@ export function KeyboardShortcutHandler() {
                 useUIStore.getState().clearSelection();
               }
             });
-          } else if (focusedIssue) {
-            deleteIssue(focusedIssue.id).then((success) => {
+          } else if (focusedIssueId) {
+            const focusedIssue = issues.find(i => i.id === focusedIssueId);
+            deleteIssue(focusedIssueId).then((success) => {
               if (success) {
-                toast.success(`Deleted City-${focusedIssue.number}`);
+                toast.success(focusedIssue ? `Deleted City-${focusedIssue.number}` : "Deleted issue");
               }
             });
           }

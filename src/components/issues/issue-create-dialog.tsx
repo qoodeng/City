@@ -28,6 +28,7 @@ import { useUndoStore } from "@/lib/stores/undo-store";
 import { executeUndo } from "@/lib/undo-executor";
 import { toast } from "sonner";
 import { DatePicker } from "@/components/ui/date-picker";
+import { useEffect } from "react";
 
 export function IssueCreateDialog() {
   const createIssueDialogOpen = useUIStore((s) => s.createIssueDialogOpen);
@@ -50,6 +51,11 @@ export function IssueCreateDialog() {
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [platform, setPlatform] = useState("");
+
+  useEffect(() => {
+    setPlatform(navigator.platform);
+  }, []);
 
   // Reset form when dialog opens / clear parent when it closes (synchronous state adjustment)
   const [prevOpen, setPrevOpen] = useState(false);
@@ -246,7 +252,7 @@ export function IssueCreateDialog() {
 
           <div className="flex justify-between items-center pt-2">
             <span className="text-xs text-muted-foreground">
-              {navigator.platform?.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to
+              {platform.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to
               submit
             </span>
             <Button

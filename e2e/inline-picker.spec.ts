@@ -78,7 +78,7 @@ test.describe("Inline Picker (Keyboard-Triggered)", () => {
   });
 
   test("l key opens inline label picker and toggles label", async ({ page, api }) => {
-    const label = await api.createLabel({ name: "InlineTestLabel" });
+    await api.createLabel({ name: "InlineTestLabel" });
     const issue = await api.createIssue({ title: "Inline Label Issue" });
 
     await page.goto("/issues");
@@ -117,7 +117,7 @@ test.describe("Inline Picker (Keyboard-Triggered)", () => {
   });
 
   test("Escape closes inline picker without changes", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Escape Picker Issue" });
+    await api.createIssue({ title: "Escape Picker Issue" });
 
     await page.goto("/issues");
     await expect(page.getByText("Escape Picker Issue")).toBeVisible();

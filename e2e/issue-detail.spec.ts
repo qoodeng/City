@@ -81,7 +81,7 @@ test.describe("Issue Detail", () => {
   });
 
   test("assign and change project", async ({ page, api }) => {
-    const project = await api.createProject({ name: "Detail Proj XYZ" });
+    await api.createProject({ name: "Detail Proj XYZ" });
     const issue = await api.createIssue({ title: "Project Assign Test" });
 
     await page.goto(`/issues/${issue.id}`);
@@ -99,7 +99,7 @@ test.describe("Issue Detail", () => {
   });
 
   test("add labels", async ({ page, api }) => {
-    const label = await api.createLabel({ name: "UniqueDetailLbl" });
+    await api.createLabel({ name: "UniqueDetailLbl" });
     const issue = await api.createIssue({ title: "Label Test Issue" });
 
     await page.goto(`/issues/${issue.id}`);
@@ -142,7 +142,7 @@ test.describe("Issue Detail", () => {
 
   test("sub-issue creation and display", async ({ page, api }) => {
     const parent = await api.createIssue({ title: "Parent Issue For Subs" });
-    const child = await api.createIssue({
+    await api.createIssue({
       title: "Child Issue",
       parentId: parent.id,
     });

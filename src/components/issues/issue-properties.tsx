@@ -28,14 +28,19 @@ import {
 } from "@/lib/constants";
 import type { Label, Project } from "@/lib/db/schema";
 import { Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 
 export function StatusPicker({
   value,
   onChange,
+  className,
+  size = 14,
 }: {
   value: Status;
   onChange: (status: Status) => void;
+  className?: string;
+  size?: number;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -44,9 +49,9 @@ export function StatusPicker({
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          className="h-8 justify-start gap-2 px-2 text-sm font-normal"
+          className={cn("h-8 justify-start gap-2 px-2 text-sm font-normal", className)}
         >
-          <StatusBadge status={value} showLabel size={14} />
+          <StatusBadge status={value} showLabel size={size} />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-48 p-0" align="start">
@@ -82,9 +87,13 @@ export function StatusPicker({
 export function PriorityPicker({
   value,
   onChange,
+  className,
+  size = 14,
 }: {
   value: Priority;
   onChange: (priority: Priority) => void;
+  className?: string;
+  size?: number;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -93,9 +102,9 @@ export function PriorityPicker({
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          className="h-8 justify-start gap-2 px-2 text-sm font-normal"
+          className={cn("h-8 justify-start gap-2 px-2 text-sm font-normal", className)}
         >
-          <PriorityIcon priority={value} showLabel size={14} />
+          <PriorityIcon priority={value} showLabel size={size} />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-48 p-0" align="start">
@@ -195,10 +204,12 @@ export function ProjectPicker({
   projects,
   value,
   onChange,
+  className,
 }: {
   projects: Project[];
   value: string | null;
   onChange: (projectId: string | null) => void;
+  className?: string;
 }) {
   const [open, setOpen] = useState(false);
   const selected = projects.find((p) => p.id === value);
@@ -208,7 +219,7 @@ export function ProjectPicker({
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          className="h-8 justify-start gap-2 px-2 text-sm font-normal text-muted-foreground"
+          className={cn("h-8 justify-start gap-2 px-2 text-sm font-normal text-muted-foreground", className)}
         >
           {selected ? (
             <>

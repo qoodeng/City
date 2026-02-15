@@ -91,6 +91,7 @@
     "drizzle-orm": "^0.45.1",
     "electron-updater": "^6.7.3",
     "framer-motion": "^12.34.0",
+    "isomorphic-dompurify": "3.0.0-rc.2",
     "lucide-react": "^0.563.0",
     "nanoid": "^5.1.6",
     "next": "16.1.6",

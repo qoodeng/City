@@ -174,9 +174,9 @@ export async function PATCH(
     if (labelIds !== undefined) {
       db.transaction((tx) => {
         tx.delete(issueLabels).where(eq(issueLabels.issueId, issueId)).run();
-        for (const labelId of labelIds) {
+        if (labelIds.length > 0) {
           tx.insert(issueLabels)
-            .values({ issueId, labelId })
+            .values(labelIds.map((labelId) => ({ issueId, labelId })))
             .run();
         }
       });

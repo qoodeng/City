@@ -28,7 +28,7 @@ import {
 } from "@/lib/constants";
 import type { Label, Project } from "@/lib/db/schema";
 import { Check } from "lucide-react";
-
+import { PropertyPicker, type PropertyPickerOption } from "./property-picker";
 
 export function StatusPicker({
   value,
@@ -37,45 +37,27 @@ export function StatusPicker({
   value: Status;
   onChange: (status: Status) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const options: PropertyPickerOption<Status>[] = STATUSES.map((status) => ({
+    value: status,
+    label: STATUS_CONFIG[status].label,
+    key: status,
+    component: (
+      <>
+        <StatusBadge status={status} size={14} />
+        <span className="ml-2">{STATUS_CONFIG[status].label}</span>
+      </>
+    ),
+  }));
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-8 justify-start gap-2 px-2 text-sm font-normal"
-        >
-          <StatusBadge status={value} showLabel size={14} />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-48 p-0" align="start">
-        <Command>
-          <CommandInput placeholder="Change status..." />
-          <CommandList>
-            <CommandEmpty>No status found.</CommandEmpty>
-            <CommandGroup>
-              {STATUSES.map((status) => (
-                <CommandItem
-                  key={status}
-                  value={status}
-                  onSelect={() => {
-                    onChange(status);
-                    setOpen(false);
-                  }}
-                >
-                  <StatusBadge status={status} size={14} />
-                  <span className="ml-2">{STATUS_CONFIG[status].label}</span>
-                  {value === status && (
-                    <Check className="ml-auto w-3.5 h-3.5 text-city-yellow" />
-                  )}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <PropertyPicker
+      value={value}
+      onSelect={onChange}
+      options={options}
+      trigger={<StatusBadge status={value} showLabel size={14} />}
+      searchPlaceholder="Change status..."
+      emptyMessage="No status found."
+    />
   );
 }
 
@@ -86,47 +68,27 @@ export function PriorityPicker({
   value: Priority;
   onChange: (priority: Priority) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const options: PropertyPickerOption<Priority>[] = PRIORITIES.map((priority) => ({
+    value: priority,
+    label: PRIORITY_CONFIG[priority].label,
+    key: priority,
+    component: (
+      <>
+        <PriorityIcon priority={priority} size={14} />
+        <span className="ml-2">{PRIORITY_CONFIG[priority].label}</span>
+      </>
+    ),
+  }));
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-8 justify-start gap-2 px-2 text-sm font-normal"
-        >
-          <PriorityIcon priority={value} showLabel size={14} />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-48 p-0" align="start">
-        <Command>
-          <CommandInput placeholder="Change priority..." />
-          <CommandList>
-            <CommandEmpty>No priority found.</CommandEmpty>
-            <CommandGroup>
-              {PRIORITIES.map((priority) => (
-                <CommandItem
-                  key={priority}
-                  value={priority}
-                  onSelect={() => {
-                    onChange(priority);
-                    setOpen(false);
-                  }}
-                >
-                  <PriorityIcon priority={priority} size={14} />
-                  <span className="ml-2">
-                    {PRIORITY_CONFIG[priority].label}
-                  </span>
-                  {value === priority && (
-                    <Check className="ml-auto w-3.5 h-3.5 text-city-yellow" />
-                  )}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <PropertyPicker
+      value={value}
+      onSelect={onChange}
+      options={options}
+      trigger={<PriorityIcon priority={value} showLabel size={14} />}
+      searchPlaceholder="Change priority..."
+      emptyMessage="No priority found."
+    />
   );
 }
 
@@ -200,71 +162,53 @@ export function ProjectPicker({
   value: string | null;
   onChange: (projectId: string | null) => void;
 }) {
-  const [open, setOpen] = useState(false);
   const selected = projects.find((p) => p.id === value);
 
+  const options: PropertyPickerOption<string | null>[] = [
+    {
+      value: null,
+      label: "No project",
+      key: "none",
+      component: "No project",
+    },
+    ...projects.map((project) => ({
+      value: project.id,
+      label: project.name,
+      key: project.id,
+      component: (
+        <>
+          <div
+            className="w-2.5 h-2.5 rounded-sm mr-2"
+            style={{ backgroundColor: project.color }}
+          />
+          {project.name}
+        </>
+      ),
+    })),
+  ];
+
+  const trigger = selected ? (
+    <>
+      <div
+        className="w-2.5 h-2.5 rounded-sm"
+        style={{ backgroundColor: selected.color }}
+      />
+      {selected.name}
+    </>
+  ) : (
+    "No project"
+  );
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          className="h-8 justify-start gap-2 px-2 text-sm font-normal text-muted-foreground"
-        >
-          {selected ? (
-            <>
-              <div
-                className="w-2.5 h-2.5 rounded-sm"
-                style={{ backgroundColor: selected.color }}
-              />
-              {selected.name}
-            </>
-          ) : (
-            "No project"
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-48 p-0" align="start">
-        <Command>
-          <CommandInput placeholder="Search projects..." />
-          <CommandList>
-            <CommandEmpty>No projects found.</CommandEmpty>
-            <CommandGroup>
-              <CommandItem
-                value="none"
-                onSelect={() => {
-                  onChange(null);
-                  setOpen(false);
-                }}
-              >
-                No project
-                {!value && (
-                  <Check className="ml-auto w-3.5 h-3.5 text-city-yellow" />
-                )}
-              </CommandItem>
-              {projects.map((project) => (
-                <CommandItem
-                  key={project.id}
-                  value={project.name}
-                  onSelect={() => {
-                    onChange(project.id);
-                    setOpen(false);
-                  }}
-                >
-                  <div
-                    className="w-2.5 h-2.5 rounded-sm mr-2"
-                    style={{ backgroundColor: project.color }}
-                  />
-                  {project.name}
-                  {value === project.id && (
-                    <Check className="ml-auto w-3.5 h-3.5 text-city-yellow" />
-                  )}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <PropertyPicker
+      value={value}
+      onSelect={onChange}
+      options={options}
+      trigger={trigger}
+      searchPlaceholder="Search projects..."
+      emptyMessage="No projects found."
+      className="text-muted-foreground"
+    />
   );
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -50,6 +50,14 @@ export function IssueCreateDialog() {
   const [dueDate, setDueDate] = useState("");
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [modifierKey, setModifierKey] = useState("Ctrl");
+
+  useEffect(() => {
+    if (typeof navigator !== "undefined" && navigator.platform?.includes("Mac")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setModifierKey("Cmd");
+    }
+  }, []);
 
   // Reset form when dialog opens / clear parent when it closes (synchronous state adjustment)
   const [prevOpen, setPrevOpen] = useState(false);
@@ -246,7 +254,7 @@ export function IssueCreateDialog() {
 
           <div className="flex justify-between items-center pt-2">
             <span className="text-xs text-muted-foreground">
-              {navigator.platform?.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to
+              {modifierKey}+Enter to
               submit
             </span>
             <Button

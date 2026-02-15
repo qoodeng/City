@@ -1,0 +1,26 @@
+
+> city@0.1.0 dev /app
+> next dev
+
+[@sentry/nextjs] DEPRECATION WARNING: disableLogger is deprecated and will be removed in a future version. Use webpack.treeshake.removeDebugLogging instead. (Not supported with Turbopack.)
+▲ Next.js 16.1.6 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.2:3000
+- Experiments (use with caution):
+  · clientTraceMetadata
+  · optimizePackageImports
+
+✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+✓ Ready in 5.1s
+○ Compiling /issues ...
+ GET /issues 200 in 18.3s (compile: 16.9s, render: 1440ms)
+ GET /issues 200 in 159ms (compile: 10ms, render: 149ms)
+ GET /api/issues?sort=created&order=desc 200 in 1883ms (compile: 1826ms, render: 58ms)
+ GET /api/issues? 200 in 2.0s (compile: 2.0s, render: 8ms)
+ GET /api/labels 200 in 2.1s (compile: 2.1s, render: 7ms)
+ GET /api/projects 200 in 2.1s (compile: 2.1s, render: 8ms)

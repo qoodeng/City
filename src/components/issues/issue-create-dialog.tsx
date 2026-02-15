@@ -9,20 +9,15 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useUIStore } from "@/lib/stores/ui-store";
 import { useIssueStore } from "@/lib/stores/issue-store";
 import { useLabelStore } from "@/lib/stores/label-store";
 import { useProjectStore } from "@/lib/stores/project-store";
-import { STATUSES, STATUS_CONFIG, PRIORITIES, PRIORITY_CONFIG } from "@/lib/constants";
-import { StatusBadge } from "@/components/status-badge";
-import { PriorityIcon } from "@/components/priority-icon";
+import {
+  StatusPicker,
+  PriorityPicker,
+  ProjectPicker,
+} from "@/components/issues/issue-properties";
 import type { Status, Priority } from "@/lib/constants";
 import { useUndoStore } from "@/lib/stores/undo-store";
 import { executeUndo } from "@/lib/undo-executor";
@@ -147,60 +142,27 @@ export function IssueCreateDialog() {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Select value={status} onValueChange={setStatus}>
-              <SelectTrigger className="w-auto h-7 text-xs gap-1.5 bg-transparent border-border">
-                <StatusBadge status={status as Status} size={12} />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {STATUSES.map((s) => (
-                  <SelectItem key={s} value={s}>
-                    <div className="flex items-center gap-2">
-                      <StatusBadge status={s} size={12} />
-                      {STATUS_CONFIG[s].label}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <StatusPicker
+              value={status as Status}
+              onChange={(s) => setStatus(s)}
+              className="w-auto h-7 text-xs gap-1.5 bg-transparent border-border"
+              size={12}
+            />
 
-            <Select value={priority} onValueChange={setPriority}>
-              <SelectTrigger className="w-auto h-7 text-xs gap-1.5 bg-transparent border-border">
-                <PriorityIcon priority={priority as Priority} size={12} />
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {PRIORITIES.map((p) => (
-                  <SelectItem key={p} value={p}>
-                    <div className="flex items-center gap-2">
-                      <PriorityIcon priority={p} size={12} />
-                      {PRIORITY_CONFIG[p].label}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <PriorityPicker
+              value={priority as Priority}
+              onChange={(p) => setPriority(p)}
+              className="w-auto h-7 text-xs gap-1.5 bg-transparent border-border"
+              size={12}
+            />
 
             {projects.length > 0 && (
-              <Select value={projectId} onValueChange={setProjectId}>
-                <SelectTrigger className="w-auto h-7 text-xs gap-1.5 bg-transparent border-border">
-                  <SelectValue placeholder="Project" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">No Project</SelectItem>
-                  {projects.map((p) => (
-                    <SelectItem key={p.id} value={p.id}>
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-2 h-2 rounded-sm"
-                          style={{ backgroundColor: p.color }}
-                        />
-                        {p.name}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <ProjectPicker
+                projects={projects}
+                value={projectId || null}
+                onChange={(id) => setProjectId(id || "")}
+                className="w-auto h-7 text-xs gap-1.5 bg-transparent border-border"
+              />
             )}
 
             <DatePicker
@@ -246,8 +208,10 @@ export function IssueCreateDialog() {
 
           <div className="flex justify-between items-center pt-2">
             <span className="text-xs text-muted-foreground">
-              {navigator.platform?.includes("Mac") ? "Cmd" : "Ctrl"}+Enter to
-              submit
+              {(typeof navigator !== "undefined" &&
+              navigator.platform?.includes("Mac")
+                ? "Cmd"
+                : "Ctrl") + "+Enter to submit"}
             </span>
             <Button
               onClick={handleSubmit}

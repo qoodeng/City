@@ -154,6 +154,19 @@ export async function POST(request: NextRequest) {
 
     // Atomic counter increment
     db.transaction((tx) => {
+      // Ensure counter exists
+      const counterExists = tx
+        .select()
+        .from(counters)
+        .where(eq(counters.id, "issue_counter"))
+        .get();
+
+      if (!counterExists) {
+        tx.insert(counters)
+          .values({ id: "issue_counter", value: 0 })
+          .run();
+      }
+
       tx.update(counters)
         .set({ value: sql`${counters.value} + 1` })
         .where(eq(counters.id, "issue_counter"))

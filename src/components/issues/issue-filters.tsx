@@ -2,20 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandInput,
-  CommandList,
   CommandItem,
-  CommandEmpty,
   CommandGroup,
 } from "@/components/ui/command";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { FilterPopover } from "./filter-popover";
 import { StatusBadge } from "@/components/status-badge";
 import { PriorityIcon } from "@/components/priority-icon";
 import {
@@ -99,198 +90,107 @@ export function IssueFilters({
       </div>
 
       {/* Status filter */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn(
-              "h-7 text-xs gap-1",
-              statusFilter.length > 0 && "bg-city-yellow/15 border-city-yellow/40 text-city-yellow"
-            )}
-          >
-            Status
-            {statusFilter.length > 0 && (
-              <Badge className="h-4 px-1 text-[11px] bg-city-yellow/20 text-city-yellow border-0">
-                {statusFilter.length}
-              </Badge>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-48 p-0" align="start">
-          <Command>
-            <CommandList>
-              <CommandGroup>
-                {STATUSES.map((status) => (
-                  <CommandItem
-                    key={status}
-                    value={status}
-                    onSelect={() => toggleStatus(status)}
-                  >
-                    <StatusBadge status={status} size={12} />
-                    <span className="ml-2 text-xs">
-                      {STATUS_CONFIG[status].label}
-                    </span>
-                    {statusFilter.includes(status) && (
-                      <Check className="ml-auto w-3 h-3 text-city-yellow" />
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <FilterPopover label="Status" activeCount={statusFilter.length}>
+        <CommandGroup>
+          {STATUSES.map((status) => (
+            <CommandItem
+              key={status}
+              value={status}
+              onSelect={() => toggleStatus(status)}
+            >
+              <StatusBadge status={status} size={12} />
+              <span className="ml-2 text-xs">
+                {STATUS_CONFIG[status].label}
+              </span>
+              {statusFilter.includes(status) && (
+                <Check className="ml-auto w-3 h-3 text-city-yellow" />
+              )}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </FilterPopover>
 
       {/* Priority filter */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn(
-              "h-7 text-xs gap-1",
-              priorityFilter.length > 0 &&
-                "bg-city-yellow/15 border-city-yellow/40 text-city-yellow"
-            )}
-          >
-            Priority
-            {priorityFilter.length > 0 && (
-              <Badge className="h-4 px-1 text-[11px] bg-city-yellow/20 text-city-yellow border-0">
-                {priorityFilter.length}
-              </Badge>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-48 p-0" align="start">
-          <Command>
-            <CommandList>
-              <CommandGroup>
-                {PRIORITIES.map((priority) => (
-                  <CommandItem
-                    key={priority}
-                    value={priority}
-                    onSelect={() => togglePriority(priority)}
-                  >
-                    <PriorityIcon priority={priority} size={12} />
-                    <span className="ml-2 text-xs">
-                      {PRIORITY_CONFIG[priority].label}
-                    </span>
-                    {priorityFilter.includes(priority) && (
-                      <Check className="ml-auto w-3 h-3 text-city-yellow" />
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <FilterPopover label="Priority" activeCount={priorityFilter.length}>
+        <CommandGroup>
+          {PRIORITIES.map((priority) => (
+            <CommandItem
+              key={priority}
+              value={priority}
+              onSelect={() => togglePriority(priority)}
+            >
+              <PriorityIcon priority={priority} size={12} />
+              <span className="ml-2 text-xs">
+                {PRIORITY_CONFIG[priority].label}
+              </span>
+              {priorityFilter.includes(priority) && (
+                <Check className="ml-auto w-3 h-3 text-city-yellow" />
+              )}
+            </CommandItem>
+          ))}
+        </CommandGroup>
+      </FilterPopover>
 
       {/* Label filter */}
       {labels.length > 0 && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(
-                "h-7 text-xs gap-1",
-                labelFilter.length > 0 &&
-                  "bg-city-yellow/15 border-city-yellow/40 text-city-yellow"
-              )}
-            >
-              Label
-              {labelFilter.length > 0 && (
-                <Badge className="h-4 px-1 text-[11px] bg-city-yellow/20 text-city-yellow border-0">
-                  {labelFilter.length}
-                </Badge>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-0" align="start">
-            <Command>
-              <CommandInput placeholder="Search labels..." />
-              <CommandList>
-                <CommandEmpty>No labels found.</CommandEmpty>
-                <CommandGroup>
-                  {labels.map((label) => (
-                    <CommandItem
-                      key={label.id}
-                      value={label.name}
-                      onSelect={() => toggleLabel(label.id)}
-                    >
-                      <div
-                        className="w-2.5 h-2.5 rounded-full mr-2"
-                        style={{ backgroundColor: label.color }}
-                      />
-                      <span className="text-xs">{label.name}</span>
-                      {labelFilter.includes(label.id) && (
-                        <Check className="ml-auto w-3 h-3 text-city-yellow" />
-                      )}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+        <FilterPopover
+          label="Label"
+          activeCount={labelFilter.length}
+          searchPlaceholder="Search labels..."
+          emptyMessage="No labels found."
+        >
+          <CommandGroup>
+            {labels.map((label) => (
+              <CommandItem
+                key={label.id}
+                value={label.name}
+                onSelect={() => toggleLabel(label.id)}
+              >
+                <div
+                  className="w-2.5 h-2.5 rounded-full mr-2"
+                  style={{ backgroundColor: label.color }}
+                />
+                <span className="text-xs">{label.name}</span>
+                {labelFilter.includes(label.id) && (
+                  <Check className="ml-auto w-3 h-3 text-city-yellow" />
+                )}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </FilterPopover>
       )}
 
       {/* Project filter */}
       {projects.length > 0 && (
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className={cn(
-                "h-7 text-xs gap-1",
-                projectFilter && "bg-city-yellow/15 border-city-yellow/40 text-city-yellow"
-              )}
+        <FilterPopover label="Project" activeCount={projectFilter ? 1 : 0}>
+          <CommandGroup>
+            <CommandItem
+              value="all"
+              onSelect={() => setProjectFilter(null)}
             >
-              Project
-              {projectFilter && (
-                <Badge className="h-4 px-1 text-[11px] bg-city-yellow/20 text-city-yellow border-0">
-                  1
-                </Badge>
+              <span className="text-xs">All Projects</span>
+              {!projectFilter && (
+                <Check className="ml-auto w-3 h-3 text-city-yellow" />
               )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-48 p-0" align="start">
-            <Command>
-              <CommandList>
-                <CommandGroup>
-                  <CommandItem
-                    value="all"
-                    onSelect={() => setProjectFilter(null)}
-                  >
-                    <span className="text-xs">All Projects</span>
-                    {!projectFilter && (
-                      <Check className="ml-auto w-3 h-3 text-city-yellow" />
-                    )}
-                  </CommandItem>
-                  {projects.map((project) => (
-                    <CommandItem
-                      key={project.id}
-                      value={project.name}
-                      onSelect={() => setProjectFilter(project.id)}
-                    >
-                      <div
-                        className="w-2.5 h-2.5 rounded-sm mr-2"
-                        style={{ backgroundColor: project.color }}
-                      />
-                      <span className="text-xs">{project.name}</span>
-                      {projectFilter === project.id && (
-                        <Check className="ml-auto w-3 h-3 text-city-yellow" />
-                      )}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
+            </CommandItem>
+            {projects.map((project) => (
+              <CommandItem
+                key={project.id}
+                value={project.name}
+                onSelect={() => setProjectFilter(project.id)}
+              >
+                <div
+                  className="w-2.5 h-2.5 rounded-sm mr-2"
+                  style={{ backgroundColor: project.color }}
+                />
+                <span className="text-xs">{project.name}</span>
+                {projectFilter === project.id && (
+                  <Check className="ml-auto w-3 h-3 text-city-yellow" />
+                )}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </FilterPopover>
       )}
 
       {/* Clear filters */}

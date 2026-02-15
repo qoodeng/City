@@ -154,6 +154,12 @@ export async function POST(request: NextRequest) {
 
     // Atomic counter increment
     db.transaction((tx) => {
+      // Ensure counter exists
+      tx.insert(counters)
+        .values({ id: "issue_counter", value: 0 })
+        .onConflictDoNothing()
+        .run();
+
       tx.update(counters)
         .set({ value: sql`${counters.value} + 1` })
         .where(eq(counters.id, "issue_counter"))
@@ -165,7 +171,11 @@ export async function POST(request: NextRequest) {
         .where(eq(counters.id, "issue_counter"))
         .get();
 
-      const number = counter!.value;
+      if (!counter) {
+        throw new Error("Failed to increment issue counter");
+      }
+
+      const number = counter.value;
 
       tx.insert(issues)
         .values({

@@ -2,7 +2,7 @@ import { test, expect } from "./fixtures";
 
 test.describe("Undo via Cmd+Z", () => {
   test("undo status change with Cmd+Z", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Undo Status Issue", status: "backlog" });
+    const _issue = await api.createIssue({ title: "Undo Status Issue", status: "backlog" });
 
     await page.goto("/issues");
     await expect(page.getByText("Undo Status Issue")).toBeVisible();
@@ -25,7 +25,7 @@ test.describe("Undo via Cmd+Z", () => {
   });
 
   test("undo delete with Cmd+Z", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Undo Delete Kbd Issue" });
+    const _issue = await api.createIssue({ title: "Undo Delete Kbd Issue" });
 
     await page.goto("/issues");
     await expect(page.getByText("Undo Delete Kbd Issue")).toBeVisible();
@@ -48,7 +48,7 @@ test.describe("Undo via Cmd+Z", () => {
   });
 
   test("undo priority change with Cmd+Z", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Undo Priority Issue", priority: "none" });
+    const _issue = await api.createIssue({ title: "Undo Priority Issue", priority: "none" });
 
     await page.goto("/issues");
     await expect(page.getByText("Undo Priority Issue")).toBeVisible();

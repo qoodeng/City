@@ -323,37 +323,38 @@ export function KeyboardShortcutHandler() {
         }
 
         // === PICKER SHORTCUTS ===
+        if (focusedIssue) {
+          // s — open inline status picker
+          if (e.key === "s" && !e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            keyboard.clearBuffer();
+            setInlinePicker({ type: "status", issueId: focusedIssue.id });
+            return;
+          }
 
-        // s — open inline status picker
-        if (e.key === "s" && !e.metaKey && !e.ctrlKey) {
-          e.preventDefault();
-          keyboard.clearBuffer();
-          setInlinePicker({ type: "status", issueId: focusedIssue.id });
-          return;
-        }
+          // p — open inline priority picker
+          if (e.key === "p" && !e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            keyboard.clearBuffer();
+            setInlinePicker({ type: "priority", issueId: focusedIssue.id });
+            return;
+          }
 
-        // p — open inline priority picker
-        if (e.key === "p" && !e.metaKey && !e.ctrlKey) {
-          e.preventDefault();
-          keyboard.clearBuffer();
-          setInlinePicker({ type: "priority", issueId: focusedIssue.id });
-          return;
-        }
+          // l — open inline label picker
+          if (e.key === "l" && !e.metaKey && !e.ctrlKey) {
+            e.preventDefault();
+            keyboard.clearBuffer();
+            setInlinePicker({ type: "label", issueId: focusedIssue.id });
+            return;
+          }
 
-        // l — open inline label picker
-        if (e.key === "l" && !e.metaKey && !e.ctrlKey) {
-          e.preventDefault();
-          keyboard.clearBuffer();
-          setInlinePicker({ type: "label", issueId: focusedIssue.id });
-          return;
-        }
-
-        // # — open inline project picker
-        if (e.key === "#") {
-          e.preventDefault();
-          keyboard.clearBuffer();
-          setInlinePicker({ type: "project", issueId: focusedIssue.id });
-          return;
+          // # — open inline project picker
+          if (e.key === "#") {
+            e.preventDefault();
+            keyboard.clearBuffer();
+            setInlinePicker({ type: "project", issueId: focusedIssue.id });
+            return;
+          }
         }
 
         // . — repeat last action

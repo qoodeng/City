@@ -15,7 +15,7 @@ vi.mock("@/lib/db", () => ({
 
 // Must import AFTER mocks
 const { GET, POST } = await import("../route");
-const { GET: GET_SINGLE, PATCH, DELETE } = await import("../[issueId]/route");
+const { GET: GET_SINGLE, PATCH: _PATCH, DELETE: _DELETE } = await import("../[issueId]/route");
 
 beforeAll(() => {
   testDb = createTestDb();

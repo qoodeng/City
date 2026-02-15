@@ -29,7 +29,7 @@ test.describe("Projects", () => {
   });
 
   test("project card shows name and issue count", async ({ page, api }) => {
-    const project = await api.createProject({ name: "Card Test Project" });
+    const _project = await api.createProject({ name: "Card Test Project" });
     await api.createIssue({ title: "Card Project Issue", projectId: project.id });
 
     await page.goto("/projects");
@@ -42,7 +42,7 @@ test.describe("Projects", () => {
   });
 
   test("navigate to project detail page", async ({ page, api }) => {
-    const project = await api.createProject({ name: "Navigate Project" });
+    const _project = await api.createProject({ name: "Navigate Project" });
 
     await page.goto("/projects");
 
@@ -53,7 +53,7 @@ test.describe("Projects", () => {
   });
 
   test("project detail shows filtered issues", async ({ page, api }) => {
-    const project = await api.createProject({ name: "Detail Project" });
+    const _project = await api.createProject({ name: "Detail Project" });
     await api.createIssue({ title: "Project Detail Issue", projectId: project.id });
     await api.createIssue({ title: "Other Issue Not In Project" });
 
@@ -66,7 +66,7 @@ test.describe("Projects", () => {
   });
 
   test("project settings: edit name and save", async ({ page, api }) => {
-    const project = await api.createProject({ name: "Settings Project" });
+    const _project = await api.createProject({ name: "Settings Project" });
 
     await page.goto(`/projects/${project.id}/settings`);
     await expect(page.getByText("Project Settings")).toBeVisible();
@@ -84,7 +84,7 @@ test.describe("Projects", () => {
   });
 
   test("delete project from settings", async ({ page, api }) => {
-    const project = await api.createProject({ name: "Delete Me Project" });
+    const _project = await api.createProject({ name: "Delete Me Project" });
 
     await page.goto(`/projects/${project.id}/settings`);
     await expect(page.getByText("Project Settings")).toBeVisible();

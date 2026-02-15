@@ -37,7 +37,28 @@ const eslintConfig = defineConfig([
     files: ["e2e/**/*.ts"],
     rules: {
       "react-hooks/rules-of-hooks": "off",
-      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+    },
+  },
+  // Allow underscore-prefixed unused vars in API tests too
+  {
+    files: ["src/**/*.test.ts", "src/**/*.spec.ts"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
     },
   },
 ]);

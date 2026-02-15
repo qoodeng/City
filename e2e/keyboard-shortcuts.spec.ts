@@ -55,7 +55,7 @@ test.describe("Keyboard Shortcuts", () => {
   });
 
   test("Enter opens focused issue", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Enter Open Issue" });
+    const _issue = await api.createIssue({ title: "Enter Open Issue" });
 
     await page.goto("/issues");
     await expect(page.getByText("Enter Open Issue")).toBeVisible();
@@ -111,7 +111,7 @@ test.describe("Keyboard Shortcuts", () => {
   });
 
   test("status shortcuts on focused issue", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Status Shortcut Issue", status: "backlog" });
+    const _issue = await api.createIssue({ title: "Status Shortcut Issue", status: "backlog" });
 
     await page.goto("/issues");
     await expect(page.getByText("Status Shortcut Issue")).toBeVisible();

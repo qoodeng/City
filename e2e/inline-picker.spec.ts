@@ -4,21 +4,14 @@ test.describe("Inline Picker (Keyboard-Triggered)", () => {
   test("s key opens inline status picker and changes status", async ({ page, api }) => {
     const issue = await api.createIssue({ title: "Inline Status Issue", status: "todo" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue
+    await page.goto(`/issues?search=${encodeURIComponent(issue.title)}`);
     await expect(page.getByText("Inline Status Issue")).toBeVisible();
 
-    // Navigate to our specific issue using j/k until focused
-    // Use repeated j presses and check if our issue gets focused
-    let focused = false;
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("j");
-      const focusedRow = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
-      if (await focusedRow.isVisible({ timeout: 300 }).catch(() => false)) {
-        focused = true;
-        break;
-      }
-    }
-    expect(focused).toBe(true);
+    // Press j to focus the only issue
+    await page.keyboard.press("j");
+    const focusedRow = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
+    await expect(focusedRow).toBeVisible();
 
     // Press s to open status picker
     await page.keyboard.press("s");
@@ -42,20 +35,14 @@ test.describe("Inline Picker (Keyboard-Triggered)", () => {
   test("p key opens inline priority picker and changes priority", async ({ page, api }) => {
     const issue = await api.createIssue({ title: "Inline Priority Issue", priority: "none" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue
+    await page.goto(`/issues?search=${encodeURIComponent(issue.title)}`);
     await expect(page.getByText("Inline Priority Issue")).toBeVisible();
 
-    // Navigate to our issue
-    let focused = false;
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("j");
-      const focusedRow = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
-      if (await focusedRow.isVisible({ timeout: 300 }).catch(() => false)) {
-        focused = true;
-        break;
-      }
-    }
-    expect(focused).toBe(true);
+    // Press j to focus
+    await page.keyboard.press("j");
+    const focusedRow = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
+    await expect(focusedRow).toBeVisible();
 
     // Press p to open priority picker
     await page.keyboard.press("p");
@@ -81,20 +68,14 @@ test.describe("Inline Picker (Keyboard-Triggered)", () => {
     const label = await api.createLabel({ name: "InlineTestLabel" });
     const issue = await api.createIssue({ title: "Inline Label Issue" });
 
-    await page.goto("/issues");
+    // Filter to isolate the issue
+    await page.goto(`/issues?search=${encodeURIComponent(issue.title)}`);
     await expect(page.getByText("Inline Label Issue")).toBeVisible();
 
-    // Navigate to our issue
-    let focused = false;
-    for (let i = 0; i < 20; i++) {
-      await page.keyboard.press("j");
-      const focusedRow = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
-      if (await focusedRow.isVisible({ timeout: 300 }).catch(() => false)) {
-        focused = true;
-        break;
-      }
-    }
-    expect(focused).toBe(true);
+    // Press j to focus
+    await page.keyboard.press("j");
+    const focusedRow = page.locator(`[data-issue-id="${issue.id}"].bg-city-yellow\\/10`);
+    await expect(focusedRow).toBeVisible();
 
     // Press l to open label picker
     await page.keyboard.press("l");

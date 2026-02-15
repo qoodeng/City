@@ -12,7 +12,7 @@ test.describe("Command Palette", () => {
 
   test("issues appear in palette from store", async ({ page, api }) => {
     const ts = Date.now();
-    const issue = await api.createIssue({ title: `PaletteIssue-${ts}` });
+    await api.createIssue({ title: `PaletteIssue-${ts}` });
 
     // Navigate to issues first so the store loads issues
     await page.goto("/issues");

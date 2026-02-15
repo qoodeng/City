@@ -78,7 +78,7 @@ test.describe("Issue Lifecycle", () => {
   });
 
   test("created issue appears in issue list", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Appears In List Issue" });
+    await api.createIssue({ title: "Appears In List Issue" });
 
     await page.goto("/issues");
     await expect(page.getByRole("heading", { name: "All Issues" })).toBeVisible();
@@ -86,7 +86,7 @@ test.describe("Issue Lifecycle", () => {
   });
 
   test("delete issue from context menu", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Context Delete Issue" });
+    await api.createIssue({ title: "Context Delete Issue" });
 
     await page.goto("/issues");
     await expect(page.getByText("Context Delete Issue")).toBeVisible();
@@ -102,7 +102,7 @@ test.describe("Issue Lifecycle", () => {
   });
 
   test("undo delete via toast action", async ({ page, api }) => {
-    const issue = await api.createIssue({ title: "Undo Delete Issue" });
+    await api.createIssue({ title: "Undo Delete Issue" });
 
     await page.goto("/issues");
     await expect(page.getByText("Undo Delete Issue")).toBeVisible();

@@ -54,6 +54,7 @@ export function IssueCreateDialog() {
 
   useEffect(() => {
     if (typeof navigator !== "undefined" && navigator.platform?.includes("Mac")) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setModifier("Cmd");
     }
   }, []);

@@ -47,6 +47,10 @@ export const batchUpdateSchema = z.object({
   }),
 });
 
+export const batchDeleteSchema = z.object({
+  issueIds: z.array(z.string().max(50)).min(1, "No issue IDs provided").max(500),
+});
+
 export const restoreIssueSchema = z.object({
   id: z.string().min(1).max(50),
   number: z.number().int().nonnegative(),

@@ -5,6 +5,7 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { STATUS_CONFIG, STATUSES, type Status } from "@/lib/constants";
 import { StatusBadge } from "@/components/status-badge";
 import { IssueListRow } from "./issue-list-row";
+import { IssueSelectionBar } from "./issue-selection-bar";
 import type { IssueWithLabels } from "@/types";
 import { EmptyState } from "@/components/empty-state";
 import { useIssueStore } from "@/lib/stores/issue-store";
@@ -97,6 +98,7 @@ export function IssueList({ issues }: { issues: IssueWithLabels[] }) {
 
   return (
     <div className="flex-1">
+      <IssueSelectionBar />
       {STATUSES.map((status) => {
         const statusIssues = grouped[status];
         if (statusIssues.length === 0) return null;
